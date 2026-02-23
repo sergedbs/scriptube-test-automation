@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{27157CF9-BE5F-4F37-B5EB-687373EFD216}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6DA77BBF-4938-47A3-AC72-B3593F03BAB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scriptube.Automation.Core", "src\Scriptube.Automation.Core\Scriptube.Automation.Core.csproj", "{1C6312B6-1502-4643-B6A0-71F2BA81B104}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scriptube.Automation.Api", "src\Scriptube.Automation.Api\Scriptube.Automation.Api.csproj", "{D1267927-FB09-4547-B010-A6111AF188E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scriptube.Automation.Ui", "src\Scriptube.Automation.Ui\Scriptube.Automation.Ui.csproj", "{179D92FB-19CE-4568-9D84-BA9B6CF667EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scriptube.Automation.Webhooks", "src\Scriptube.Automation.Webhooks\Scriptube.Automation.Webhooks.csproj", "{AEF34831-2FCF-406A-B45E-C0CE35EA7DB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scriptube.Automation.Tests", "tests\Scriptube.Automation.Tests\Scriptube.Automation.Tests.csproj", "{9B293F48-D5CE-4684-8DCB-7661CA139BD9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1C6312B6-1502-4643-B6A0-71F2BA81B104} = {27157CF9-BE5F-4F37-B5EB-687373EFD216}
+		{D1267927-FB09-4547-B010-A6111AF188E0} = {27157CF9-BE5F-4F37-B5EB-687373EFD216}
+		{179D92FB-19CE-4568-9D84-BA9B6CF667EA} = {27157CF9-BE5F-4F37-B5EB-687373EFD216}
+		{AEF34831-2FCF-406A-B45E-C0CE35EA7DB3} = {27157CF9-BE5F-4F37-B5EB-687373EFD216}
+		{9B293F48-D5CE-4684-8DCB-7661CA139BD9} = {6DA77BBF-4938-47A3-AC72-B3593F03BAB1}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C6312B6-1502-4643-B6A0-71F2BA81B104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C6312B6-1502-4643-B6A0-71F2BA81B104}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C6312B6-1502-4643-B6A0-71F2BA81B104}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C6312B6-1502-4643-B6A0-71F2BA81B104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1267927-FB09-4547-B010-A6111AF188E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1267927-FB09-4547-B010-A6111AF188E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1267927-FB09-4547-B010-A6111AF188E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1267927-FB09-4547-B010-A6111AF188E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{179D92FB-19CE-4568-9D84-BA9B6CF667EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{179D92FB-19CE-4568-9D84-BA9B6CF667EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{179D92FB-19CE-4568-9D84-BA9B6CF667EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{179D92FB-19CE-4568-9D84-BA9B6CF667EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEF34831-2FCF-406A-B45E-C0CE35EA7DB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEF34831-2FCF-406A-B45E-C0CE35EA7DB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEF34831-2FCF-406A-B45E-C0CE35EA7DB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEF34831-2FCF-406A-B45E-C0CE35EA7DB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B293F48-D5CE-4684-8DCB-7661CA139BD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B293F48-D5CE-4684-8DCB-7661CA139BD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B293F48-D5CE-4684-8DCB-7661CA139BD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B293F48-D5CE-4684-8DCB-7661CA139BD9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
