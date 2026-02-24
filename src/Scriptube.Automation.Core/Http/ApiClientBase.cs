@@ -36,10 +36,7 @@ public class ApiClientBase : IDisposable
             Timeout = TimeSpan.FromSeconds(settings.Timeouts.RequestSeconds)
         };
 
-        var options = new RestClientOptions(settings.BaseUrl)
-        {
-            ConfigureMessageHandler = _ => _loggingHandler
-        };
+        var options = new RestClientOptions(settings.BaseUrl);
 
         Client = new RestClient(httpClient, options);
 
@@ -63,6 +60,7 @@ public class ApiClientBase : IDisposable
     {
         if (_disposed) return;
         Client.Dispose();
+        _loggingHandler.Dispose();
         _disposed = true;
         GC.SuppressFinalize(this);
     }
