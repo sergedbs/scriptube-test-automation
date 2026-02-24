@@ -19,6 +19,13 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <PackageReference Include="FluentAssertions" Version="7.2.0" />
         <PackageReference Include="dotenv.net" Version="3.2.1" />
+        <PackageReference Include="Allure.Net.Commons" Version="2.14.0" />
+        <PackageReference Include="NUnit" Version="4.3.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+        <None Include="appsettings.*.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>
