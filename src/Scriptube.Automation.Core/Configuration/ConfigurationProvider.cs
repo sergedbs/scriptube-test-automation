@@ -24,11 +24,17 @@ public static class ConfigurationProvider
 
     public static TestSettings Get()
     {
-        if (_cached is not null) return _cached;
+        if (_cached is not null)
+        {
+            return _cached;
+        }
 
         lock (_lock)
         {
-            if (_cached is not null) return _cached;
+            if (_cached is not null)
+            {
+                return _cached;
+            }
             _cached = Build();
         }
 
@@ -104,7 +110,9 @@ public static class ConfigurationProvider
         while (dir is not null)
         {
             if (File.Exists(Path.Combine(dir.FullName, "appsettings.json")))
+            {
                 return dir.FullName;
+            }
             dir = dir.Parent;
         }
         return Directory.GetCurrentDirectory();

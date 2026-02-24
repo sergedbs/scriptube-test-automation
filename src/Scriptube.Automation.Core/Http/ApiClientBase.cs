@@ -58,7 +58,11 @@ public class ApiClientBase : IDisposable
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         Client.Dispose();
         _loggingHandler.Dispose();
         _disposed = true;

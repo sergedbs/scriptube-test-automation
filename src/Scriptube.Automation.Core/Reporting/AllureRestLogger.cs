@@ -58,7 +58,10 @@ public static class AllureRestLogger
 
     private static string TruncatePath(string url)
     {
-        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return url;
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+        {
+            return url;
+        }
         var path = uri.AbsolutePath;
         return path.Length > 40 ? "..." + path[^37..] : path;
     }
