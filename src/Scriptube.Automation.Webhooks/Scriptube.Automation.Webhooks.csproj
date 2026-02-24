@@ -2,8 +2,14 @@
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Scriptube.Automation.Core\Scriptube.Automation.Core.csproj" />
+    </ItemGroup>
 
 </Project>
