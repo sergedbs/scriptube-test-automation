@@ -487,3 +487,14 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+
+# Test automation specific
+allure-results/
+allure-report/
+playwright-screenshots/
+playwright/.cache/
+appsettings.local.json
+appsettings.*.local.json
+
+TODO.md
+TASK.md

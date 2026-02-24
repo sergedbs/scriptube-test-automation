@@ -1,0 +1,27 @@
+repos:
+  - repo: local
+    hooks:
+      - id: dotnet-restore
+        name: dotnet restore
+        entry: bash -c 'dotnet restore Scriptube.Automation.sln'
+        language: system
+        pass_filenames: false
+
+      - id: dotnet-format
+        name: dotnet format (verify no changes)
+        entry: bash -c 'dotnet format Scriptube.Automation.sln --verify-no-changes --verbosity diagnostic'
+        language: system
+        pass_filenames: false
+
+      - id: dotnet-build
+        name: dotnet build --warnaserror (Release)
+        entry: bash -c 'dotnet build Scriptube.Automation.sln -c Release --no-restore --warnaserror'
+        language: system
+        pass_filenames: false
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.0
+    hooks:
+      - id: gitleaks
+        name: gitleaks (secrets scan)
+        args: ["--redact", "--verbose"]

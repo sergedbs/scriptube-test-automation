@@ -1,0 +1,7 @@
+{
+  "allure": {
+    "directory": "allure-results",
+    "links": [],
+    "title": "Scriptube Test Automation"
+  }
+}
