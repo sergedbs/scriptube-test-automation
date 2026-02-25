@@ -3,15 +3,13 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using Scriptube.Automation.Core.Tests;
+using Scriptube.Automation.Ui.Browser;
 
 namespace Scriptube.Automation.Ui.Tests;
 
 /// <summary>
 /// Base class for UI (Playwright) test fixtures.
-/// NUnit calls every [SetUp]/[TearDown] in the hierarchy automatically (base → derived).
-/// So <see cref="BaseTest.SetUp"/> runs first, then <see cref="SetUpBrowserAsync"/>.
-/// Each test gets an isolated <see cref="IBrowserContext"/> and <see cref="IPage"/>.
-/// Screenshots are taken on failure and attached to the Allure report.
+/// Each test gets an isolated browser context and page; screenshots are attached to Allure on failure.
 /// </summary>
 public abstract class BaseUiTest : BaseTest
 {
@@ -20,30 +18,19 @@ public abstract class BaseUiTest : BaseTest
     protected IBrowserContext Context { get; private set; } = null!;
     protected IPage Page { get; private set; } = null!;
 
-    /// <summary>Called by NUnit after <see cref="BaseTest.SetUp"/> completes.</summary>
+    /// <summary>
+    /// Override to supply a storage-state path and restore saved auth state, skipping re-login.
+    /// </summary>
+    protected virtual string? StorageStatePath => null;
+
     [SetUp]
     public async Task SetUpBrowserAsync()
     {
-        _playwright = await Playwright.CreateAsync();
-
-        _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-        {
-            Headless = true
-        });
-
-        Context = await _browser.NewContextAsync(new BrowserNewContextOptions
-        {
-            ViewportSize = new ViewportSize { Width = Settings.ViewportWidth, Height = Settings.ViewportHeight },
-            Locale = "en-US"
-        });
-
-        Context.SetDefaultNavigationTimeout(Settings.Timeouts.PlaywrightNavigationMs);
-        Context.SetDefaultTimeout(Settings.Timeouts.PlaywrightActionMs);
-
+        (_playwright, _browser) = await PlaywrightFactory.CreateBrowserAsync(Settings);
+        Context = await BrowserContextFactory.CreateContextAsync(_browser, Settings, StorageStatePath);
         Page = await Context.NewPageAsync();
     }
 
-    /// <summary>Called by NUnit before <see cref="BaseTest.TearDown"/> completes.</summary>
     [TearDown]
     public async Task TearDownBrowserAsync()
     {
@@ -75,7 +62,7 @@ public abstract class BaseUiTest : BaseTest
         }
         catch
         {
-            // Never let screenshot failure break the test teardown.
+            // Never let a screenshot failure break test teardown.
         }
     }
 
