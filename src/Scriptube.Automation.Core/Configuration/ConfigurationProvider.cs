@@ -11,11 +11,18 @@ namespace Scriptube.Automation.Core.Configuration;
 ///   4. Environment variables (highest priority, used in CI)
 ///
 /// Env-var mapping (the IConfiguration key → env var):
-///   ApiKey        → SCRIPTUBE_API_KEY
-///   BaseUrl       → SCRIPTUBE_BASE_URL
+///   ApiKey               → SCRIPTUBE_API_KEY
+///   BaseUrl              → SCRIPTUBE_BASE_URL
 ///   Credentials:Email    → SCRIPTUBE_EMAIL
 ///   Credentials:Password → SCRIPTUBE_PASSWORD
 ///   WebhookReceiverUrl   → WEBHOOK_RECEIVER_URL
+///   WebhookReceiverPort  → WEBHOOK_RECEIVER_PORT
+///   NgrokApiPort         → NGROK_API_PORT
+///   ViewportWidth        → BROWSER_VIEWPORT_WIDTH
+///   ViewportHeight       → BROWSER_VIEWPORT_HEIGHT
+///
+/// Nested timeout/retry settings can also be overridden via IConfiguration conventions:
+///   e.g. Timeouts__WebhookDispatchWaitSeconds=15 or Retry__Count=5
 /// </summary>
 public static class ConfigurationProvider
 {
@@ -88,6 +95,26 @@ public static class ConfigurationProvider
 
             WebhookReceiverUrl = config["WEBHOOK_RECEIVER_URL"]
                                  ?? config["WebhookReceiverUrl"],
+
+            WebhookReceiverPort = int.TryParse(
+                config["WEBHOOK_RECEIVER_PORT"] ?? config["WebhookReceiverPort"], out var port)
+                ? port
+                : 5099,
+
+            NgrokApiPort = int.TryParse(
+                config["NGROK_API_PORT"] ?? config["NgrokApiPort"], out var ngrokPort)
+                ? ngrokPort
+                : 4040,
+
+            ViewportWidth = int.TryParse(
+                config["BROWSER_VIEWPORT_WIDTH"] ?? config["ViewportWidth"], out var vpWidth)
+                ? vpWidth
+                : 1280,
+
+            ViewportHeight = int.TryParse(
+                config["BROWSER_VIEWPORT_HEIGHT"] ?? config["ViewportHeight"], out var vpHeight)
+                ? vpHeight
+                : 900,
         };
 
         return settings;

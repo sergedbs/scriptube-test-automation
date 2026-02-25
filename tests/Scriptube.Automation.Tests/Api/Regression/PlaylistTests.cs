@@ -53,8 +53,8 @@ public sealed class PlaylistTests : BaseApiTest
     {
         var batch = await SubmitPlaylistAndPollAsync(PlaylistUrls.AllSuccess);
 
-        batch.Items.Should().HaveCount(3,
-            because: "PLtstOK00001 is defined as a 3-video all-success playlist");
+        batch.Items.Should().HaveCount(PlaylistUrls.AllSuccessItemCount,
+            because: $"PLtstOK00001 is defined as a {PlaylistUrls.AllSuccessItemCount}-video all-success playlist");
         batch.Items.Should().AllSatisfy(item =>
             item.Status.Should().Be("completed",
                 because: $"PLtstOK00001 contains only success videos — item {item.VideoId} must complete"));
@@ -89,8 +89,8 @@ public sealed class PlaylistTests : BaseApiTest
     {
         var batch = await SubmitPlaylistAndPollAsync(PlaylistUrls.AllMixed);
 
-        batch.Items.Should().HaveCount(5,
-            because: "PLtstALL0001 is defined as a 5-video playlist");
+        batch.Items.Should().HaveCount(PlaylistUrls.AllMixedItemCount,
+            because: $"PLtstALL0001 is defined as a {PlaylistUrls.AllMixedItemCount}-video playlist");
 
         batch.Items.Should().AllSatisfy(item =>
             item.Status.Should().BeOneOf(

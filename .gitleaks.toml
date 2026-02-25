@@ -1,0 +1,14 @@
+[extend]
+# Inherit the default ruleset. Only add exceptions below.
+useDefault = true
+
+[allowlist]
+description = "Test fixture values that are intentionally hardcoded and not real secrets"
+
+# Allowlist by exact secret value — these strings are invented test fixtures
+# and have no value outside the test suite.
+regexes = [
+    "smoke-test-secret-key-1234",
+    "regression-test-secret-key-5678",
+    "hmac-verification-secret-abc-xyz",
+]

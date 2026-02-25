@@ -11,11 +11,17 @@ public static class PlaylistUrls
     /// <summary>3 success videos — all items complete successfully.</summary>
     public const string AllSuccess = $"{YouTubePlaylistBase}PLtstOK00001";
 
+    /// <summary>Number of videos in <see cref="AllSuccess"/> as defined by the test data spec.</summary>
+    public const int AllSuccessItemCount = 3;
+
     /// <summary>Mixed: English + Korean + ElevenLabs videos.</summary>
     public const string Mixed = $"{YouTubePlaylistBase}PLtstMIX0001";
 
     /// <summary>5 videos — mix of successes and errors.</summary>
     public const string AllMixed = $"{YouTubePlaylistBase}PLtstALL0001";
+
+    /// <summary>Number of videos in <see cref="AllMixed"/> as defined by the test data spec.</summary>
+    public const int AllMixedItemCount = 5;
 
     /// <summary>3 error-only videos — all items fail.</summary>
     public const string AllErrors = $"{YouTubePlaylistBase}PLtstERR0001";
