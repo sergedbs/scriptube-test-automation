@@ -48,17 +48,17 @@ public sealed class BatchCancelTests : BaseApiTest
     }
 
     [TearDown]
-    public override void TearDown()
+    public override async Task TearDown()
     {
         foreach (var batchId in _batchIdsToCleanup)
         {
-            try { _transcripts.DeleteAsync(batchId).GetAwaiter().GetResult(); }
+            try { await _transcripts.DeleteAsync(batchId); }
             catch { /* best-effort cleanup */ }
         }
 
         _transcripts.Dispose();
         _credits.Dispose();
-        base.TearDown();
+        await base.TearDown();
     }
 
     // Cancel immediately → status becomes "cancelled"

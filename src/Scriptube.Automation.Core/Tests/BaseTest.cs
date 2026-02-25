@@ -18,7 +18,5 @@ public abstract class BaseTest
     }
 
     [TearDown]
-    public virtual void TearDown()
-    {
-    }
+    public virtual Task TearDown() => Task.CompletedTask;
 }

@@ -43,6 +43,9 @@ public class LoggingHttpHandler : DelegatingHandler
         try
         {
             response = await base.SendAsync(request, cancellationToken);
+            // HttpClient uses HttpCompletionOption.ResponseContentRead by default, which fully
+            // buffers the response body before returning.  ReadAsStringAsync here simply reads
+            // from that internal buffer, so RestSharp can safely read Content a second time.
             responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
         }
         catch (Exception ex)

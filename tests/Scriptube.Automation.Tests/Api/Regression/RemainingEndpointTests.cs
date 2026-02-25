@@ -33,12 +33,12 @@ public sealed class RemainingEndpointTests : BaseApiTest
     }
 
     [TearDown]
-    public override void TearDown()
+    public override async Task TearDown()
     {
         _usage.Dispose();
         _credits.Dispose();
         _transcripts.Dispose();
-        base.TearDown();
+        await base.TearDown();
     }
 
     // GET /api/v1/usage

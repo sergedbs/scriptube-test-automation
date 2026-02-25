@@ -28,10 +28,10 @@ public sealed class CreditCostsSmokeTests : BaseApiTest
     }
 
     [TearDown]
-    public override void TearDown()
+    public override async Task TearDown()
     {
         _credits.Dispose();
-        base.TearDown();
+        await base.TearDown();
     }
 
     [Test]

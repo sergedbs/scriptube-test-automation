@@ -38,16 +38,16 @@ public sealed class RetryFailedTests : BaseApiTest
     }
 
     [TearDown]
-    public override void TearDown()
+    public override async Task TearDown()
     {
         foreach (var batchId in _batchIdsToCleanup)
         {
-            try { _transcripts.DeleteAsync(batchId).GetAwaiter().GetResult(); }
+            try { await _transcripts.DeleteAsync(batchId); }
             catch { /* best-effort cleanup */ }
         }
 
         _transcripts.Dispose();
-        base.TearDown();
+        await base.TearDown();
     }
 
     // Submit error videos → items fail

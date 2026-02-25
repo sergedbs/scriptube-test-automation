@@ -22,10 +22,10 @@ public abstract class BaseApiTest : BaseTest
     }
 
     [TearDown]
-    public override void TearDown()
+    public override async Task TearDown()
     {
         AllureRestLogger.Detach(ApiClient);
         ApiClient.Dispose();
-        base.TearDown();
+        await base.TearDown();
     }
 }

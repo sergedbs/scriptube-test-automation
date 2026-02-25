@@ -1,7 +1,7 @@
 namespace Scriptube.Automation.Core.Configuration;
 
 /// <summary>Strongly-typed settings loaded from appsettings.json + environment variables.</summary>
-public class TestSettings
+public record TestSettings
 {
     public string BaseUrl { get; init; } = "https://scriptube.me";
     public string ApiKey { get; init; } = string.Empty;
@@ -12,13 +12,13 @@ public class TestSettings
     public string? WebhookReceiverUrl { get; init; }
 }
 
-public class CredentialsSettings
+public record CredentialsSettings
 {
     public string Email { get; init; } = string.Empty;
     public string Password { get; init; } = string.Empty;
 }
 
-public class TimeoutSettings
+public record TimeoutSettings
 {
     /// <summary>General HTTP request timeout in seconds.</summary>
     public int RequestSeconds { get; init; } = 30;
@@ -36,7 +36,7 @@ public class TimeoutSettings
     public int PlaywrightActionMs { get; init; } = 10_000;
 }
 
-public class RetrySettings
+public record RetrySettings
 {
     /// <summary>Number of automatic retries for transient failures.</summary>
     public int Count { get; init; } = 3;
