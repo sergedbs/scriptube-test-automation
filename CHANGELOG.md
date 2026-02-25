@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-02-26
+
+### Added
+
+#### Webhook Client & Infrastructure (`Scriptube.Automation.Api`, `Scriptube.Automation.Webhooks`)
+
+- `WebhooksClient` — typed REST client for all 8 `/api/webhooks` endpoints: `RegisterAsync`, `GetAsync`, `ListAsync`, `DeleteAsync`, `TriggerTestAsync`, `GetLogsAsync`, `GetAvailableEventsAsync`, `RetryDeliveryAsync`
+- `HmacVerifier` — HMAC-SHA256 utility with three methods:
+  - `CanonicalizeJson(string json)` — replicates Python's `json.dumps(payload, sort_keys=True)` (recursively sorted keys, `, ` / `: ` separators, `UnsafeRelaxedJsonEscaping` to match Python's unescaped output)
+  - `Compute(string secret, string payload)` — returns lowercase hex HMAC-SHA256 digest
+  - `Verify(string secret, string payload, string signature)` — constant-time comparison via `CryptographicOperations.FixedTimeEquals`
+- `WebhookTestData` — test data constants extracted from test classes: signing secrets (`SmokeSecret`, `RegressionSecret`, `HmacVerificationSecret`), event names (`EventBatchCompleted`, `EventTranscriptReady`, `EventCreditsLow`), and SSRF probe URLs (`SsrfLocalhost`, `SsrfPrivate192`, `SsrfPrivate10`)
+- `ReceivedRequest` — immutable `sealed record` capturing body, headers, and receipt timestamp for inspecting inbound webhook deliveries
+- `ReceivedRequestStore` — thread-safe `ConcurrentQueue`-backed store; `WaitForRequestAsync(TimeSpan)` polls every 200 ms and throws `TimeoutException` if no delivery arrives within the deadline
+- `WebhookReceiver` — `HttpListener`-based in-process HTTP server (no ASP.NET dependency); listens on `http://*:{port}/` (wildcard host to accept ngrok-forwarded requests), responds HTTP 200, enqueues each delivery into `ReceivedRequestStore`; implements `IAsyncDisposable`
+- `NgrokTunnelClient` — static helper that queries `http://localhost:4040/api/tunnels` and returns the first `https://` public URL; throws `InvalidOperationException` with a clear message if ngrok is unreachable
+- `WebhookReceiverManager` — static coordinator with three operating modes:
+  - **External URL** — when `WEBHOOK_RECEIVER_URL` env var is set, uses it directly; no local server or ngrok started; `HasLocalReceiver = false`
+  - **Local receiver + ngrok** — starts `WebhookReceiver` then queries ngrok; `HasLocalReceiver = true`
+  - **Graceful degradation** — if ngrok is not running and no external URL is configured, catches the exception, logs a warning, and sets `ActiveReceiverUrl = null`; tests requiring a receiver URL self-skip via `SkipIfNoReceiverUrl()`
+- `BaseWebhookTest` — updated base class exposing `WebhooksClient Webhooks`, `TranscriptsClient Transcripts`, `string? WebhookUrl`, `ReceivedRequestStore? ReceiverStore`, `bool HasLocalReceiver`, and the `SkipIfNoReceiverUrl()` static guard helper; `[SetUp]` clears `ReceiverStore` for test isolation
+- `WebhookReceiverPort: 5099` added to `TestSettings` and `appsettings.json`
+- `Scriptube.Automation.Webhooks.csproj` — added `ProjectReference` to `Scriptube.Automation.Api`
+- `.gitleaks.toml` — repo-level gitleaks config that extends the default ruleset and allowlists the three test-fixture signing secrets so `pre-commit` scanning passes
+
+#### Webhook Test Suite (`Scriptube.Automation.Tests`)
+
+- `WebhookTestSetupFixture` — namespace-scoped `[SetUpFixture]`; calls `WebhookReceiverManager.StartAsync` in `[OneTimeSetUp]` and `StopAsync` in `[OneTimeTearDown]`; failure to start (e.g. ngrok not running) no longer kills the entire fixture
+- `WebhookSmokeTests` — 6 tests (`[Category("Smoke")]`, `[Category("Webhook")]`):
+  - `RegisterWebhook_WithValidUrl_Returns201AndWebhookId` — POST register with valid HTTPS URL → HTTP 201 + non-empty webhook ID *(skipped when no receiver URL available)*
+  - `GetAvailableEvents_ReturnsHttp200WithNonEmptyList` — GET available events → HTTP 200 + non-empty list *(always runs)*
+  - `ListWebhooks_AfterRegister_ContainsRegisteredWebhook` — register then list → list contains the new ID *(skipped when no receiver URL)*
+  - `RegisterWebhook_WithLocalhostUrl_IsRejectedWith4xx` — SSRF via `localhost` → 4xx *(always runs)*
+  - `RegisterWebhook_WithPrivateRange192_IsRejectedWith4xx` — SSRF via `192.168.1.1` → 4xx *(always runs)*
+  - `RegisterWebhook_WithPrivateRange10_IsRejectedWith4xx` — SSRF via `10.0.0.1` → 4xx *(always runs)*
+- `WebhookLifecycleTests` — 8 tests (`[Category("Regression")]`, `[Category("Webhook")]`), all using `RegisterTestWebhookAsync` helper (auto-skips when no receiver URL):
+  - `GetWebhook_AfterRegister_ReturnsMatchingDetails` — GET after register → matching URL, events, `is_active = true`
+  - `DeleteWebhook_Returns200_AndSubsequentGetFails` — DELETE → HTTP 200 → subsequent GET → 4xx
+  - `TriggerTestEvent_Returns200WithDeliveryId` — POST test → HTTP 200 + non-empty delivery ID
+  - `GetLogs_AfterTriggerTest_ContainsDeliveryEntry` — trigger then GET logs (2 s wait) → non-empty deliveries list
+  - `RetryDelivery_WithValidDeliveryId_Returns200` — trigger → get delivery ID from logs → POST retry → HTTP 200 (successful delivery) or 404 (delivery already succeeded)
+  - `BatchComplete_WithoutByok_DeliveryLogContainsBatchCompletedEvent` — submit `tstENMAN001` → poll to completion → GET logs → contains a `batch.*` delivery with a recorded `response_code`
+  - `BatchComplete_WithByok_DeliveryLogCreated` — same flow with `use_byok=true` → delivery log non-empty
+  - `HmacSignature_MatchesLocallyComputedValue` — trigger test event → capture raw request in local receiver → verify `X-Scriptube-Signature` matches `HmacVerifier.Verify` against the canonicalised body *(skipped when `HasLocalReceiver = false`)*
+
+### Fixed
+
+- `WebhookReceiver` — changed `HttpListener` prefix from `http://localhost:{port}/` to `http://*:{port}/`; the original binding rejected ngrok-forwarded requests because ngrok preserves the original `Host` header (e.g. `xxxx.ngrok-free.app`) rather than rewriting it to `localhost`
+- `HmacVerifier` — initial implementation signed the raw body string; the API signs `json.dumps(payload, sort_keys=True)` (Python canonical form with sorted keys and `, ` / `: ` separators); added `CanonicalizeJson` and updated `Verify` to canonicalise before computing the digest; also switched to `JavaScriptEncoder.UnsafeRelaxedJsonEscaping` to prevent `System.Text.Json` from over-escaping characters such as `+` in ISO-8601 timestamps
+- `RetryDelivery` test — assertion relaxed from `HttpStatusCode.OK` to `BeOneOf([200, 404])`; the retry endpoint returns 404 when the targeted delivery already succeeded (only failed deliveries are re-queueable)
+
 ## [0.5.0] - 2026-02-25
 
 ### Added
