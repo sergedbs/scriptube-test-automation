@@ -9,7 +9,14 @@ public record TestSettings
     public TimeoutSettings Timeouts { get; init; } = new();
     public RetrySettings Retry { get; init; } = new();
     public string Browser { get; init; } = "chromium";
+    /// <summary>
+    /// External webhook receiver URL. When non-empty, the in-process receiver and ngrok tunnel
+    /// are skipped entirely and this URL is used for webhook registration.
+    /// </summary>
     public string? WebhookReceiverUrl { get; init; }
+
+    /// <summary>Local port for the in-process webhook receiver. Used when <see cref="WebhookReceiverUrl"/> is empty.</summary>
+    public int WebhookReceiverPort { get; init; } = 5099;
 }
 
 public record CredentialsSettings

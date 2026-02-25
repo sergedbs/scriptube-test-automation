@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Scriptube.Automation.Core\Scriptube.Automation.Core.csproj" />
+        <ProjectReference Include="..\Scriptube.Automation.Api\Scriptube.Automation.Api.csproj" />
     </ItemGroup>
 
 </Project>
