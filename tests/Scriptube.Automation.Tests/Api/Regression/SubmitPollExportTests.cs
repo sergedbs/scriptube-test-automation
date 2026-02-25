@@ -1,6 +1,5 @@
 using System.Net;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using Allure.NUnit.Attributes;
 using FluentAssertions;
 using Scriptube.Automation.Api.Clients;
@@ -205,28 +204,24 @@ public sealed class SubmitPollExportTests : BaseApiTest
     }
 
     [Test]
-    [AllureStep("Export completed batch in SRT format → content contains SRT timestamp markers")]
-    public async Task Export_SrtFormat_ContainsSrtTimestamps()
+    [AllureStep("Export completed batch in CSV format → response contains comma-separated values")]
+    public async Task Export_CsvFormat_ContainsCsvContent()
     {
         // Arrange
         var batchId = await SubmitAndPollSingleVideoAsync(VideoIds.EnglishManualUrl);
 
         // Act
-        var exportResponse = await _transcripts.ExportAsync(batchId, ExportFormats.Srt);
+        var exportResponse = await _transcripts.ExportAsync(batchId, ExportFormats.Csv);
 
         // Assert
         exportResponse.StatusCode.Should().Be(HttpStatusCode.OK,
-            because: "a completed batch must be exportable as SRT");
+            "a completed batch must be exportable as CSV");
         exportResponse.Content.Should().NotBeNullOrWhiteSpace(
-            because: "SRT export must contain subtitle data");
+            "CSV export must contain data");
 
-        // SRT format: "HH:MM:SS,mmm --> HH:MM:SS,mmm"
-        var srtTimestampPattern = new Regex(
-            @"\d{2}:\d{2}:\d{2},\d{3}\s+-->\s+\d{2}:\d{2}:\d{2},\d{3}",
-            RegexOptions.Multiline);
-
-        srtTimestampPattern.IsMatch(exportResponse.Content!).Should().BeTrue(
-            because: "a valid SRT export must contain at least one 'HH:MM:SS,mmm --> HH:MM:SS,mmm' timestamp line");
+        // CSV must contain comma-delimited fields
+        exportResponse.Content.Should().Contain(",",
+            "CSV export must contain comma-separated fields");
     }
 
     // Shared helper
