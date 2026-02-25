@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-02-25
+
+### Added
+
+#### Smoke Test Suite — `Scriptube.Automation.Tests`
+
+- `CreditsBalanceSmokeTests` — 3 tests: HTTP 200, non-negative numeric balance, non-empty plan name (`GET /api/v1/credits/balance`)
+- `UserSmokeTests` — 4 tests: HTTP 200, email contains `@`, plan name present, user ID present (`GET /api/v1/user`)
+- `PlansSmokeTests` — 2 tests: HTTP 200, non-empty plans list (`GET /api/v1/plans`)
+- `AuthNegativeSmokeTests` — 3 tests: no API key → 401, invalid API key → 401 (balance + user endpoints)
+- `ValidationNegativeSmokeTests` — 2 tests: empty URL list → 4xx, non-YouTube URL → 4xx (`POST /api/v1/transcripts`)
+- `CreditCostsSmokeTests` — fixture created but `[Ignored]`; `GET /api/v1/credits/costs` is absent from the public OpenAPI spec
+- `SeoToolSmokeTests` — fixture created but `[Ignored]`; `POST /tools/youtube-transcript` is absent from the public OpenAPI spec
+- All test classes tagged `[Category("Smoke")]`, `[AllureSuite("Smoke")]`, and `[AllureFeature(...)]` / `[AllureTag(...)]` for NUnit filter and Allure report grouping
+
+### Fixed
+
+- `ConfigurationProvider` — replaced `WithEnvFiles(".env")` with `WithProbeForEnv(probeLevelsToSearch: 8)`; the previous approach resolved `.env` relative to `bin/Debug/net10.0/` at runtime so the repo-root `.env` file was never loaded
+- `ValidationNegativeSmokeTests` — empty-URL-list test now constructs `TranscriptRequest { Urls = [] }` directly instead of going through `TranscriptRequestBuilder.Build()`, which intentionally guards against empty lists and was throwing `InvalidOperationException` before the request reached the server
+
 ## [0.2.0] - 2026-02-24
 
 ### Added
@@ -112,4 +132,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed placeholder `Class1.cs` from all `src/` projects and `UnitTest1.cs` from the test project
 
-[Unreleased]: https://github.com/sergedbs/scriptube-test-automation/compare/initial...HEAD
+[Unreleased]: https://github.com/sergedbs/scriptube-test-automation/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/sergedbs/scriptube-test-automation/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/sergedbs/scriptube-test-automation/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/sergedbs/scriptube-test-automation/compare/initial...v0.1.0

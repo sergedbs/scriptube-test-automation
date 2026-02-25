@@ -43,10 +43,10 @@ public static class ConfigurationProvider
 
     private static TestSettings Build()
     {
-        // Load .env file when running locally (no-op if file does not exist)
+        // Load .env file when running locally (no-op if file does not exist).
         DotEnv.Fluent()
             .WithoutExceptions()
-            .WithEnvFiles(".env")
+            .WithProbeForEnv(probeLevelsToSearch: 8)
             .Load();
 
         var environment = Environment.GetEnvironmentVariable("TEST_ENV") ?? "Development";
