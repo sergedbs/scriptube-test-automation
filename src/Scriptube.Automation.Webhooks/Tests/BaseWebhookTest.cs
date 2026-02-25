@@ -38,7 +38,7 @@ public abstract class BaseWebhookTest : BaseTest
         {
             Assert.Ignore(
                 "No webhook receiver URL is available. " +
-                "Either set WEBHOOK_RECEIVER_URL in .env or run 'ngrok http 5099' before executing.");
+                $"Either set WEBHOOK_RECEIVER_URL in .env or run 'ngrok http {WebhookReceiverManager.ReceiverPort}' before executing.");
         }
     }
 
@@ -54,6 +54,12 @@ public abstract class BaseWebhookTest : BaseTest
     /// guard with <c>if (!HasLocalReceiver) Assert.Ignore("...")</c>.
     /// </summary>
     protected bool HasLocalReceiver => WebhookReceiverManager.HasLocalReceiver;
+
+    /// <summary>
+    /// The port the local receiver is listening on. Use in informative skip messages instead
+    /// of hardcoding the default port number.
+    /// </summary>
+    protected static int ReceiverPort => WebhookReceiverManager.ReceiverPort;
 
     [SetUp]
     public override void SetUp()

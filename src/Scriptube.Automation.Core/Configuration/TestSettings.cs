@@ -17,6 +17,15 @@ public record TestSettings
 
     /// <summary>Local port for the in-process webhook receiver. Used when <see cref="WebhookReceiverUrl"/> is empty.</summary>
     public int WebhookReceiverPort { get; init; } = 5099;
+
+    /// <summary>Local port of the ngrok agent API. Used to discover the active tunnel URL.</summary>
+    public int NgrokApiPort { get; init; } = 4040;
+
+    /// <summary>Browser viewport width in pixels used for UI tests.</summary>
+    public int ViewportWidth { get; init; } = 1280;
+
+    /// <summary>Browser viewport height in pixels used for UI tests.</summary>
+    public int ViewportHeight { get; init; } = 900;
 }
 
 public record CredentialsSettings
@@ -41,6 +50,21 @@ public record TimeoutSettings
 
     /// <summary>Playwright action timeout in milliseconds.</summary>
     public int PlaywrightActionMs { get; init; } = 10_000;
+
+    /// <summary>Maximum seconds to poll GetLogs waiting for a delivery entry to appear after a webhook trigger.</summary>
+    public int WebhookDispatchWaitSeconds { get; init; } = 10;
+
+    /// <summary>Maximum seconds to wait for a raw delivery to arrive in the local HttpListener receiver.</summary>
+    public int WebhookDeliveryTimeoutSeconds { get; init; } = 30;
+
+    /// <summary>Timeout in seconds for the ngrok local API HTTP request.</summary>
+    public int NgrokApiTimeoutSeconds { get; init; } = 5;
+
+    /// <summary>
+    /// Seconds to wait after cancelling a batch before re-reading the credit balance,
+    /// allowing the server to settle the cancellation.
+    /// </summary>
+    public int CancelSettleSeconds { get; init; } = 2;
 }
 
 public record RetrySettings

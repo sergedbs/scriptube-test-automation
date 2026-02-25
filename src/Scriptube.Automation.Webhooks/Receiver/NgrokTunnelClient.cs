@@ -8,27 +8,34 @@ namespace Scriptube.Automation.Webhooks.Receiver;
 /// </summary>
 public static class NgrokTunnelClient
 {
-    private const string NgrokApiUrl = "http://localhost:4040/api/tunnels";
+    private const string NgrokApiHost = "http://localhost";
+    private const int DefaultNgrokApiPort = 4040;
 
     /// <summary>
-    /// Queries <c>http://localhost:4040/api/tunnels</c> and returns the first active HTTPS tunnel URL.
+    /// Queries the ngrok local API and returns the first active HTTPS tunnel URL.
     /// </summary>
+    /// <param name="ngrokApiPort">Port the ngrok agent API is listening on (default: 4040).</param>
+    /// <param name="ct">Cancellation token.</param>
     /// <exception cref="InvalidOperationException">
     /// When ngrok is not running or no HTTPS tunnel is found.
     /// </exception>
-    public static async Task<string> GetPublicUrlAsync(CancellationToken ct = default)
+    public static async Task<string> GetPublicUrlAsync(
+        int ngrokApiPort = DefaultNgrokApiPort,
+        int timeoutSeconds = 5,
+        CancellationToken ct = default)
     {
-        using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+        var apiUrl = $"{NgrokApiHost}:{ngrokApiPort}/api/tunnels";
+        using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(timeoutSeconds) };
 
         string json;
         try
         {
-            json = await http.GetStringAsync(NgrokApiUrl, ct);
+            json = await http.GetStringAsync(apiUrl, ct);
         }
         catch (Exception ex)
         {
             throw new InvalidOperationException(
-                "Could not reach the ngrok local API at http://localhost:4040. " +
+                $"Could not reach the ngrok local API at {apiUrl}. " +
                 "Ensure ngrok is running: ngrok http <port>",
                 ex);
         }

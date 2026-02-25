@@ -2,6 +2,7 @@ using Allure.NUnit.Attributes;
 using FluentAssertions;
 using Scriptube.Automation.Api.Clients;
 using Scriptube.Automation.Api.Models.Requests;
+using Scriptube.Automation.Api.TestData;
 using Scriptube.Automation.Api.Tests;
 
 namespace Scriptube.Automation.Tests.Api.Smoke;
@@ -54,7 +55,7 @@ public sealed class ValidationNegativeSmokeTests : BaseApiTest
     [AllureStep("POST /api/v1/transcripts with non-YouTube URL returns 4xx with error body")]
     public async Task SubmitTranscript_WithNonYouTubeUrl_Returns4xxWithError()
     {
-        var request = new TranscriptRequest { Urls = ["https://vimeo.com/123456789"] };
+        var request = new TranscriptRequest { Urls = [ValidationTestData.NonYouTubeUrl] };
 
         var response = await _transcripts.SubmitAsync(request);
 

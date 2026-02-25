@@ -32,6 +32,7 @@ public static class WebhookReceiverManager
     private static ReceivedRequestStore? _store;
     private static string? _activeUrl;
     private static bool _started;
+    private static int _receiverPort;
 
     /// <summary>
     /// The HTTPS URL to register with the Scriptube webhook API, or <see langword="null"/> when
@@ -46,6 +47,12 @@ public static class WebhookReceiverManager
     /// <see langword="null"/> when an external URL is configured.
     /// </summary>
     public static ReceivedRequestStore? Store => _store;
+
+    /// <summary>
+    /// The port the local webhook receiver is listening on. Useful for building informative
+    /// skip messages without repeating the default port number.
+    /// </summary>
+    public static int ReceiverPort => _receiverPort;
 
     /// <summary>
     /// <see langword="true"/> when the local receiver is running and raw request data
@@ -64,6 +71,8 @@ public static class WebhookReceiverManager
         {
             return;
         }
+
+        _receiverPort = settings.WebhookReceiverPort;
 
         if (!string.IsNullOrWhiteSpace(settings.WebhookReceiverUrl))
         {
@@ -87,7 +96,9 @@ public static class WebhookReceiverManager
 
         try
         {
-            _activeUrl = await NgrokTunnelClient.GetPublicUrlAsync();
+            _activeUrl = await NgrokTunnelClient.GetPublicUrlAsync(
+                settings.NgrokApiPort,
+                settings.Timeouts.NgrokApiTimeoutSeconds);
             Log.Information(
                 "[WebhookReceiverManager] ngrok tunnel active: {Url}",
                 _activeUrl);
@@ -122,5 +133,6 @@ public static class WebhookReceiverManager
         _store = null;
         _activeUrl = null;
         _started = false;
+        _receiverPort = 0;
     }
 }

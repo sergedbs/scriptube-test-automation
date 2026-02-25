@@ -11,6 +11,12 @@ public static class VideoIds
     /// <summary>English manual captions — cheapest path (1 credit).</summary>
     public const string EnglishManual = "tstENMAN001";
 
+    /// <summary>
+    /// Credit cost for processing <see cref="EnglishManual"/> via the live API.
+    /// Standard YouTube caption path charges 4 credits per video.
+    /// </summary>
+    public const int EnglishManualCreditCost = 4;
+
     /// <summary>English auto-generated captions (1 credit).</summary>
     public const string EnglishAuto = "tstENAUT001";
 

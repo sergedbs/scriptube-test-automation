@@ -134,8 +134,8 @@ public sealed class BatchCancelTests : BaseApiTest
         cancel.StatusCode.Should().BeOneOf(
             [HttpStatusCode.OK, HttpStatusCode.NoContent, HttpStatusCode.Accepted]);
 
-        // Wait briefly for the server to settle the cancel before re-reading balance
-        await Task.Delay(TimeSpan.FromSeconds(2));
+        // Wait for the server to settle the cancel before re-reading balance
+        await Task.Delay(TimeSpan.FromSeconds(Settings.Timeouts.CancelSettleSeconds));
 
         // Assert — verify actual terminal status then check credit impact
         var batch = (await _transcripts.GetBatchAsync(batchId)).Data;

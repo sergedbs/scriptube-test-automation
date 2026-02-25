@@ -3,6 +3,7 @@ using Allure.NUnit.Attributes;
 using FluentAssertions;
 using Scriptube.Automation.Api.Models.Builders;
 using Scriptube.Automation.Api.Models.Requests;
+using Scriptube.Automation.Api.Models.Responses;
 using Scriptube.Automation.Api.TestData;
 using Scriptube.Automation.Api.Utilities;
 using Scriptube.Automation.Webhooks.Tests;
@@ -57,14 +58,22 @@ public sealed class WebhookLifecycleTests : BaseWebhookTest
     // Helpers
     // -------------------------------------------------------------------------
 
-    private async Task<string> RegisterTestWebhookAsync()
+    /// <summary>
+    /// Registers a test webhook with the active receiver URL, tracks it for cleanup,
+    /// and returns its ID.
+    /// </summary>
+    /// <param name="secret">
+    /// Signing secret to register the webhook with. Defaults to <see cref="TestSecret"/> when
+    /// <see langword="null"/>.
+    /// </param>
+    private async Task<string> RegisterTestWebhookAsync(string? secret = null)
     {
         SkipIfNoReceiverUrl();
         var response = await Webhooks.RegisterAsync(new WebhookRegisterRequest
         {
             Url = WebhookUrl!,
             Events = [BatchCompletedEvent],
-            Secret = TestSecret,
+            Secret = secret ?? TestSecret,
         });
 
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -72,6 +81,31 @@ public sealed class WebhookLifecycleTests : BaseWebhookTest
         var id = response.Data.WebhookId!;
         _webhookIdsToCleanup.Add(id);
         return id;
+    }
+
+    /// <summary>
+    /// Polls GET /api/webhooks/{id}/logs until at least one delivery entry appears,
+    /// or throws <see cref="TimeoutException"/> when <paramref name="timeout"/> elapses.
+    /// </summary>
+    private async Task<DeliveryLogsResponse> PollUntilDeliveryAsync(
+        string webhookId,
+        TimeSpan timeout)
+    {
+        var deadline = DateTimeOffset.UtcNow.Add(timeout);
+        while (DateTimeOffset.UtcNow < deadline)
+        {
+            var response = await Webhooks.GetLogsAsync(webhookId);
+            ((int)response.StatusCode).Should().BeInRange(200, 299,
+                because: "GET /api/webhooks/{id}/logs must return a success status");
+            if (response.Data?.Deliveries?.Count > 0)
+            {
+                return response.Data;
+            }
+            await Task.Delay(TimeSpan.FromSeconds(1));
+        }
+        throw new TimeoutException(
+            $"No webhook delivery appeared in logs for webhook '{webhookId}' " +
+            $"within {timeout.TotalSeconds:F0} second(s).");
     }
 
     // -------------------------------------------------------------------------
@@ -155,20 +189,15 @@ public sealed class WebhookLifecycleTests : BaseWebhookTest
         var webhookId = await RegisterTestWebhookAsync();
         await Webhooks.TriggerTestAsync(webhookId);
 
-        // Short wait to allow the delivery to be recorded
-        await Task.Delay(TimeSpan.FromSeconds(2));
-
-        // Act
-        var logsResponse = await Webhooks.GetLogsAsync(webhookId);
+        // Poll until the delivery is recorded — more resilient than a fixed delay.
+        var logs = await PollUntilDeliveryAsync(webhookId,
+            TimeSpan.FromSeconds(Settings.Timeouts.WebhookDispatchWaitSeconds));
 
         // Assert
-        logsResponse.StatusCode.Should().Be(HttpStatusCode.OK,
-            because: "GET logs for a registered webhook must return HTTP 200");
-        logsResponse.Data.Should().NotBeNull();
-        logsResponse.Data!.Deliveries.Should().NotBeEmpty(
+        logs.Deliveries.Should().NotBeEmpty(
             because: "triggering a test event must produce at least one delivery log entry");
-        logsResponse.Data.Deliveries[0].DeliveryId.Should().NotBeNullOrWhiteSpace();
-        logsResponse.Data.Deliveries[0].Event.Should().NotBeNullOrWhiteSpace();
+        logs.Deliveries[0].DeliveryId.Should().NotBeNullOrWhiteSpace();
+        logs.Deliveries[0].Event.Should().NotBeNullOrWhiteSpace();
     }
 
     [Test]
@@ -178,13 +207,12 @@ public sealed class WebhookLifecycleTests : BaseWebhookTest
         // Arrange — trigger test event and get the resulting delivery ID from logs
         var webhookId = await RegisterTestWebhookAsync();
         await Webhooks.TriggerTestAsync(webhookId);
-        await Task.Delay(TimeSpan.FromSeconds(2));
 
-        var logsResponse = await Webhooks.GetLogsAsync(webhookId);
-        logsResponse.Data.Should().NotBeNull();
-        logsResponse.Data!.Deliveries.Should().NotBeEmpty(
+        var logs = await PollUntilDeliveryAsync(webhookId,
+            TimeSpan.FromSeconds(Settings.Timeouts.WebhookDispatchWaitSeconds));
+        logs.Deliveries.Should().NotBeEmpty(
             because: "a delivery log entry is required as a prerequisite for this test");
-        var deliveryId = logsResponse.Data.Deliveries[0].DeliveryId;
+        var deliveryId = logs.Deliveries[0].DeliveryId;
 
         // Act
         var retryResponse = await Webhooks.RetryDeliveryAsync(webhookId, deliveryId);
@@ -225,22 +253,19 @@ public sealed class WebhookLifecycleTests : BaseWebhookTest
         batch.Status.Should().BeOneOf(["completed", "failed"],
             because: "polling must end in a terminal status");
 
-        // Allow a few seconds for the webhook delivery to be recorded
-        await Task.Delay(TimeSpan.FromSeconds(3));
-
-        var logsResponse = await Webhooks.GetLogsAsync(webhookId);
+        // Poll until the webhook delivery is recorded in logs.
+        var logs = await PollUntilDeliveryAsync(webhookId,
+            TimeSpan.FromSeconds(Settings.Timeouts.WebhookDispatchWaitSeconds));
 
         // Assert
-        logsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        logsResponse.Data.Should().NotBeNull();
-        logsResponse.Data!.Deliveries.Should().NotBeEmpty(
+        logs.Deliveries.Should().NotBeEmpty(
             because: "batch completion must trigger at least one webhook delivery");
 
-        logsResponse.Data.Deliveries
+        logs.Deliveries
             .Should().Contain(d => d.Event.Contains("batch"),
                 because: "at least one delivery must correspond to the batch event");
 
-        logsResponse.Data.Deliveries
+        logs.Deliveries
             .Should().Contain(d => d.ResponseCode != null,
                 because: "a delivery attempt response code must be recorded");
     }
@@ -266,14 +291,12 @@ public sealed class WebhookLifecycleTests : BaseWebhookTest
 
         // Act — poll + wait for delivery
         await Transcripts.PollUntilCompleteAsync(batchId);
-        await Task.Delay(TimeSpan.FromSeconds(3));
 
-        var logsResponse = await Webhooks.GetLogsAsync(webhookId);
+        var logs = await PollUntilDeliveryAsync(webhookId,
+            TimeSpan.FromSeconds(Settings.Timeouts.WebhookDispatchWaitSeconds));
 
         // Assert
-        logsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        logsResponse.Data.Should().NotBeNull();
-        logsResponse.Data!.Deliveries.Should().NotBeEmpty(
+        logs.Deliveries.Should().NotBeEmpty(
             because: "batch completion with use_byok=true must also trigger a webhook delivery");
     }
 
@@ -289,37 +312,19 @@ public sealed class WebhookLifecycleTests : BaseWebhookTest
         {
             Assert.Ignore(
                 "This test requires the local HttpListener receiver and an ngrok tunnel. " +
-                "Leave WEBHOOK_RECEIVER_URL empty in .env and run 'ngrok http 5099' before executing.");
+                $"Leave WEBHOOK_RECEIVER_URL empty in .env and run 'ngrok http {ReceiverPort}' before executing.");
         }
 
-        // Arrange
+        // Arrange — register directly with the HMAC-specific secret
         var hmacSecret = WebhookTestData.HmacVerificationSecret;
-        var webhookId = await RegisterTestWebhookAsync();
+        var webhookId = await RegisterTestWebhookAsync(hmacSecret);
 
-        // Use the known secret specifically for this webhook
-        _webhookIdsToCleanup.Remove(webhookId);
-        await Webhooks.DeleteAsync(webhookId);
-
-        var registerResponse = await Webhooks.RegisterAsync(new WebhookRegisterRequest
-        {
-            Url = WebhookUrl!,
-            Events = [BatchCompletedEvent],
-            Secret = hmacSecret,
-        });
-        registerResponse.StatusCode.Should().Be(HttpStatusCode.Created);
-        var hmacWebhookId = registerResponse.Data!.WebhookId!;
-        _webhookIdsToCleanup.Add(hmacWebhookId);
-
-        // Act — trigger test event so the receiver captures the delivery
+        // Act — trigger test event; WaitForRequestAsync polls until the delivery arrives
         ReceiverStore!.Clear();
-        await Webhooks.TriggerTestAsync(hmacWebhookId);
-
-        // Give Scriptube a moment to queue and dispatch the delivery before we start
-        // polling — async dispatch can lag by a few seconds after the trigger returns.
-        await Task.Delay(TimeSpan.FromSeconds(2));
+        await Webhooks.TriggerTestAsync(webhookId);
 
         var received = await ReceiverStore.WaitForRequestAsync(
-            timeout: TimeSpan.FromSeconds(30));
+            timeout: TimeSpan.FromSeconds(Settings.Timeouts.WebhookDeliveryTimeoutSeconds));
 
         // Assert
         received.Headers.TryGetValue("x-scriptube-signature", out var signature)

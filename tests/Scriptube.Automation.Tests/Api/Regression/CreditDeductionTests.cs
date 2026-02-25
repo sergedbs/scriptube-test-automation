@@ -93,8 +93,8 @@ public sealed class CreditDeductionTests : BaseApiTest
         after.StatusCode.Should().Be(HttpStatusCode.OK);
         var balanceAfter = after.Data!.CreditsBalance;
 
-        (balanceBefore - balanceAfter).Should().Be(4,
-            "tstENMAN001 is a standard English caption video and costs exactly 4 credits");
+        (balanceBefore - balanceAfter).Should().Be(VideoIds.EnglishManualCreditCost,
+            $"tstENMAN001 is a standard English caption video and costs exactly {VideoIds.EnglishManualCreditCost} credits");
     }
 
     [Test]

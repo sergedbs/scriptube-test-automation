@@ -33,7 +33,7 @@ public abstract class BaseUiTest : BaseTest
 
         Context = await _browser.NewContextAsync(new BrowserNewContextOptions
         {
-            ViewportSize = new ViewportSize { Width = 1280, Height = 900 },
+            ViewportSize = new ViewportSize { Width = Settings.ViewportWidth, Height = Settings.ViewportHeight },
             Locale = "en-US"
         });
 

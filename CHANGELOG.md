@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-02-26
+
+### Added
+
+- `ValidationTestData` — `NonYouTubeUrl` constant; replaces the inline literal in `ValidationNegativeSmokeTests`
+- `VideoIds.EnglishManualCreditCost`, `PlaylistUrls.AllSuccessItemCount / AllMixedItemCount` — named constants replacing bare integers in test assertions
+- `TestSettings` — added `NgrokApiPort`, `ViewportWidth`, `ViewportHeight` and four new `TimeoutSettings` fields (`WebhookDispatchWaitSeconds`, `WebhookDeliveryTimeoutSeconds`, `NgrokApiTimeoutSeconds`, `CancelSettleSeconds`); all wired to env vars and `appsettings.json`
+- `PollUntilDeliveryAsync` helper in `WebhookLifecycleTests` — polls `GetLogsAsync` every 1 s until a delivery appears; replaces all bare `Task.Delay + GetLogs` patterns
+- `WebhookReceiverManager.ReceiverPort` — exposes the actual listener port for dynamic skip messages
+
+### Fixed
+
+- `WebhookLifecycleTests` — replaced all hardcoded `Task.Delay` waits with `PollUntilDeliveryAsync`
+- `HmacSignature` test — removed double-register pattern; now calls `RegisterTestWebhookAsync(hmacSecret)` directly via new optional `secret` parameter
+- All remaining hardcoded values (viewport size, ngrok port, delays) moved to config/constants
+
 ## [0.6.0] - 2026-02-26
 
 ### Added
