@@ -19,7 +19,7 @@ namespace Scriptube.Automation.Core.Configuration;
 /// </summary>
 public static class ConfigurationProvider
 {
-    private static TestSettings? _cached;
+    private static volatile TestSettings? _cached;
     private static readonly object _lock = new();
 
     public static TestSettings Get()

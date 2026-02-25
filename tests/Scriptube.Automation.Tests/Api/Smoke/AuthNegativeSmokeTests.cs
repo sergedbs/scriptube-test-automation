@@ -1,8 +1,8 @@
 using Allure.NUnit.Attributes;
 using FluentAssertions;
 using Scriptube.Automation.Api.Clients;
-using Scriptube.Automation.Api.Tests;
 using Scriptube.Automation.Core.Configuration;
+using Scriptube.Automation.Core.Tests;
 
 namespace Scriptube.Automation.Tests.Api.Smoke;
 
@@ -15,21 +15,12 @@ namespace Scriptube.Automation.Tests.Api.Smoke;
 [AllureSuite("Smoke")]
 [AllureFeature("Authentication")]
 [AllureTag("Smoke", "Auth", "Negative", "Security")]
-public sealed class AuthNegativeSmokeTests : BaseApiTest
+public sealed class AuthNegativeSmokeTests : BaseTest
 {
     /// <summary>
     /// Creates a <see cref="TestSettings"/> clone with the given API key overridden.
     /// </summary>
-    private TestSettings WithApiKey(string apiKey) => new()
-    {
-        BaseUrl = Settings.BaseUrl,
-        ApiKey = apiKey,
-        Credentials = Settings.Credentials,
-        Timeouts = Settings.Timeouts,
-        Retry = Settings.Retry,
-        Browser = Settings.Browser,
-        WebhookReceiverUrl = Settings.WebhookReceiverUrl
-    };
+    private TestSettings WithApiKey(string apiKey) => Settings with { ApiKey = apiKey };
 
     [Test]
     [AllureStep("GET /api/v1/credits/balance with no API key returns HTTP 401")]

@@ -7,6 +7,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-02-25
+
+### Added
+
+#### Regression Test Suite — Full API Coverage (`Scriptube.Automation.Tests`)
+
+- `SuccessVideoPathTests` — 10 tests, one per success-path video ID, each asserting `status == "completed"` and `transcript_text` non-empty:
+  - `tstENAUT001` — English auto-captions
+  - `tstKOONL001` — Korean with `translate_to_english`
+  - `tstESAUT001` — Spanish with `translate_to_english`
+  - `tstMULTI001` — multi-language video, English track selected
+  - `tstYTTRN001` — French via YouTube auto-translate
+  - `tstNOCAP001` — no captions, ElevenLabs AI fallback
+  - `tstELABS001` — forced ElevenLabs transcription
+  - `tstELTRN001` — ElevenLabs with German to English translation
+  - `tstCACHE001` — cached YouTube transcript (cache-hit path)
+  - `tstCACEL001` — cached ElevenLabs transcript (cache-hit path)
+- `ErrorVideoPathTests` — 7 tests, one per error-path video ID, each asserting `status == "failed"` (live API uses `"failed"` at the item level, not `"error"`) and `error` field non-empty:
+  - `tstPRIVT001` — private video
+  - `tstDELET001` — deleted video
+  - `tstAGERS001` — age-restricted video
+  - `tstLONG0001` — video exceeding maximum duration
+  - `tstRLIMT001` — rate-limited video
+  - `tstTIMEO001` — connection timeout
+  - `tstINVLD001` — malformed video data
+- `PlaylistTests` — 4 tests covering all playlist compositions:
+  - `PLtstOK00001` — all-success playlist, asserts exactly 3 items all `completed`
+  - `PLtstMIX0001` — mixed playlist, asserts all items reach a terminal status and at least one is `completed`
+  - `PLtstALL0001` — 5-video mixed playlist, asserts exactly 5 items all in terminal status
+  - `PLtstERR0001` — all-error playlist, asserts batch reaches terminal status and all items are `failed` with non-empty error messages
+- `RemainingEndpointTests` — 3 active tests + 1 ignored:
+  - `GET /api/v1/usage` — HTTP 200, plan name present, all numeric quota fields non-negative
+  - `GET /api/v1/transcripts/{batch_id}` with nil UUID — HTTP 404 (malformed string IDs return 422 from format validation; nil UUID bypasses validation and reaches the lookup)
+  - `GET /api/v1/transcripts/{batch_id}` with foreign UUID — HTTP 404 (API hides resource existence from non-owners)
+  - `GET /api/v1/credits/history` — implemented but `[Ignore]`d; endpoint not yet live on the public API
+
+### Fixed
+
+- `ErrorVideoPathTests` — initial item status assertion used `"error"`; corrected to `"failed"` after running against the live API revealed the actual status value returned
+- `RemainingEndpointTests` — `GetBatch_NonExistentId_Returns404` initially used a free-form string ID which triggered HTTP 422 from format validation; replaced with the nil UUID (`00000000-0000-0000-0000-000000000000`) to bypass validation and reach the 404 path
+
+## [0.4.0] - 2026-02-25
+
+### Added
+
+#### Regression Test Suite — Core Transcript Flows (`Scriptube.Automation.Tests`)
+
+- `SubmitPollExportTests` — 5 active tests covering the full Submit → Poll → Export E2E flow:
+  - Single English manual video (`tstENMAN001`) → poll to completion → transcript text non-empty
+  - Batch of 3 success videos → all items reach `completed` status
+  - Playlist URL (`PLtstOK00001`) → batch expands to ≥ 1 item, all items complete
+  - Export in JSON format → response is valid JSON with `video_id` field present
+  - Export in TXT format → non-empty plain-text response
+  - SRT export test created but `[Ignore]`d — SRT is outside the supported format set (`json`, `csv`, `txt`)
+- `CreditDeductionTests` — 3 active tests verifying credit balance changes after processing:
+  - Balance before submit is a valid non-negative integer
+  - Submit `tstENMAN001` → poll complete → balance decreases by exactly 4 credits
+  - Submit `tstKOONL001` with `translate_to_english` → batch completes → deduction ≥ 4 credits
+  - Precheck-matches-actual test created but `[Ignore]`d — `POST /api/v1/credits/precheck` returns HTTP 405
+- `PrecheckEstimateTests` — full test bodies for precheck and estimate correlation; all `[Ignore]`d — both `POST /api/v1/credits/precheck` and `POST /api/v1/credits/estimate` return HTTP 405
+- `BatchCancelTests` — full test bodies for cancel flow (submit → cancel immediately → verify `cancelled` status, cancel non-existent ID → 404, no credits charged); all `[Ignore]`d — `POST …/cancel` returns HTTP 405
+- `RetryFailedTests` — full test bodies for retry-failed flow (submit error videos → items fail → retry → HTTP 2xx, retry non-existent batch → 404); all `[Ignore]`d — `POST …/retry-failed` returns HTTP 405
+- `BatchLifecycleTests` — full test bodies for rerun and delete operations (rerun after completion, rerun non-existent → 404, delete → 200/204 → GET → 404); all `[Ignore]`d — both `POST …/rerun` and `DELETE /api/v1/transcripts/{batch_id}` return HTTP 405
+- All test classes tagged `[Category("Regression")]`, `[Category("API")]`, `[AllureSuite("Regression")]`, and feature/tag attributes for NUnit filter and Allure report grouping
+- Best-effort `[TearDown]` cleanup in every test class silently swallows 405 errors from `DeleteAsync` so test isolation is maintained even when the delete endpoint is unavailable
+
 ## [0.3.0] - 2026-02-25
 
 ### Added
@@ -131,8 +197,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Removed placeholder `Class1.cs` from all `src/` projects and `UnitTest1.cs` from the test project
-
-[Unreleased]: https://github.com/sergedbs/scriptube-test-automation/compare/v0.3.0...HEAD
-[0.3.0]: https://github.com/sergedbs/scriptube-test-automation/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/sergedbs/scriptube-test-automation/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/sergedbs/scriptube-test-automation/compare/initial...v0.1.0

@@ -28,10 +28,10 @@ public sealed class SeoToolSmokeTests : BaseApiTest
     }
 
     [TearDown]
-    public override void TearDown()
+    public override async Task TearDown()
     {
         _seoTool.Dispose();
-        base.TearDown();
+        await base.TearDown();
     }
 
     [Test]

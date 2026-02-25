@@ -27,10 +27,10 @@ public sealed class PlansSmokeTests : BaseApiTest
     }
 
     [TearDown]
-    public override void TearDown()
+    public override async Task TearDown()
     {
         _plans.Dispose();
-        base.TearDown();
+        await base.TearDown();
     }
 
     [Test]

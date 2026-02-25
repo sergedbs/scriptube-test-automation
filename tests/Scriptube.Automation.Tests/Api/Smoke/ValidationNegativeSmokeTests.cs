@@ -28,10 +28,10 @@ public sealed class ValidationNegativeSmokeTests : BaseApiTest
     }
 
     [TearDown]
-    public override void TearDown()
+    public override async Task TearDown()
     {
         _transcripts.Dispose();
-        base.TearDown();
+        await base.TearDown();
     }
 
     [Test]
