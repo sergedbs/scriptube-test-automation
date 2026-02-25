@@ -19,6 +19,12 @@ namespace Scriptube.Automation.Tests.Api.Regression;
 /// <c>completed</c>.  Where this race affects the expected outcome it is explicitly documented
 /// in the assertion message.
 /// </para>
+/// <para>
+/// All tests are currently <b>ignored</b>: <c>POST …/cancel</c> returns HTTP 405 Method Not
+/// Allowed against the live API, matching the same pattern as <c>/retry-failed</c>, <c>/rerun</c>,
+/// <c>/credits/precheck</c>, and <c>/credits/estimate</c>.  Remove <c>[Ignore]</c> once the
+/// endpoint is deployed to the public API surface.
+/// </para>
 /// </summary>
 [TestFixture]
 [Category("Regression")]

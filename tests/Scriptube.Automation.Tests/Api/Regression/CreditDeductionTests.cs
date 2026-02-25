@@ -12,6 +12,13 @@ namespace Scriptube.Automation.Tests.Api.Regression;
 /// Regression tests verifying credit deduction after batch processing.
 /// Actual costs per the live API: 4 credits per transcript,
 /// plus 12 credits per 1,000 characters for translation.
+/// <para>
+/// <see cref="PrecheckEstimate_MatchesActualDeduction_ForEnglishManualVideo"/> is currently
+/// <b>ignored</b>: <c>POST /api/v1/credits/precheck</c> returns HTTP 405 Method Not Allowed
+/// against the live API, matching the same pattern as <c>/credits/estimate</c>, <c>/cancel</c>,
+/// <c>/retry-failed</c>, and <c>/rerun</c>.  Remove <c>[Ignore]</c> once the endpoint is
+/// deployed to the public API surface.
+/// </para>
 /// </summary>
 [TestFixture]
 [Category("Regression")]
