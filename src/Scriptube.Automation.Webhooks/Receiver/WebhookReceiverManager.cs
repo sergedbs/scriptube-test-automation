@@ -34,13 +34,12 @@ public static class WebhookReceiverManager
     private static bool _started;
 
     /// <summary>
-    /// The HTTPS URL to register with the Scriptube webhook API.
-    /// Available after <see cref="StartAsync"/> completes.
+    /// The HTTPS URL to register with the Scriptube webhook API, or <see langword="null"/> when
+    /// no receiver is available (ngrok not running and no external URL configured).
+    /// Tests that require a real receiver URL should call
+    /// <see cref="BaseWebhookTest.SkipIfNoReceiverUrl"/> before using this value.
     /// </summary>
-    public static string ActiveReceiverUrl =>
-        _activeUrl ?? throw new InvalidOperationException(
-            "WebhookReceiverManager.StartAsync() has not been called. " +
-            "Ensure the WebhookTestSetupFixture is in scope.");
+    public static string? ActiveReceiverUrl => _activeUrl;
 
     /// <summary>
     /// The in-process request store used to inspect received payloads and headers.
@@ -86,12 +85,28 @@ public static class WebhookReceiverManager
         _receiver = new WebhookReceiver(_store);
         _receiver.Start(settings.WebhookReceiverPort);
 
-        _activeUrl = await NgrokTunnelClient.GetPublicUrlAsync();
-        _started = true;
+        try
+        {
+            _activeUrl = await NgrokTunnelClient.GetPublicUrlAsync();
+            Log.Information(
+                "[WebhookReceiverManager] ngrok tunnel active: {Url}",
+                _activeUrl);
+        }
+        catch (InvalidOperationException ex)
+        {
+            // ngrok is not running — stop the local receiver and continue without a URL.
+            // Tests that need a receiver URL will self-skip via SkipIfNoReceiverUrl().
+            await _receiver.DisposeAsync();
+            _receiver = null;
+            _store = null;
+            _activeUrl = null;
+            Log.Warning(
+                "[WebhookReceiverManager] ngrok not available — receiver disabled. " +
+                "Tests requiring a webhook URL will be skipped. Detail: {Message}",
+                ex.Message);
+        }
 
-        Log.Information(
-            "[WebhookReceiverManager] ngrok tunnel active: {Url}",
-            _activeUrl);
+        _started = true;
     }
 
     /// <summary>Stops the local receiver (if running) and resets state.</summary>

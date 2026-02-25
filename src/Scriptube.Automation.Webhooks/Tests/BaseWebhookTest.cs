@@ -21,8 +21,26 @@ public abstract class BaseWebhookTest : BaseTest
     /// <summary>Typed client for <c>/api/v1/transcripts</c> — used in batch-completion delivery tests.</summary>
     protected TranscriptsClient Transcripts { get; private set; } = null!;
 
-    /// <summary>The public HTTPS URL to register with the Scriptube webhook API.</summary>
-    protected string WebhookUrl => WebhookReceiverManager.ActiveReceiverUrl;
+    /// <summary>
+    /// The public HTTPS URL to register with the Scriptube webhook API,
+    /// or <see langword="null"/> when no receiver is available.
+    /// </summary>
+    protected string? WebhookUrl => WebhookReceiverManager.ActiveReceiverUrl;
+
+    /// <summary>
+    /// Skips the current test with an informative message when no webhook receiver URL is available
+    /// (i.e. <c>WEBHOOK_RECEIVER_URL</c> is not set and ngrok is not running).
+    /// Call this at the start of any test that registers a webhook.
+    /// </summary>
+    protected static void SkipIfNoReceiverUrl()
+    {
+        if (WebhookReceiverManager.ActiveReceiverUrl is null)
+        {
+            Assert.Ignore(
+                "No webhook receiver URL is available. " +
+                "Either set WEBHOOK_RECEIVER_URL in .env or run 'ngrok http 5099' before executing.");
+        }
+    }
 
     /// <summary>
     /// The in-process request store for inspecting raw payloads and HMAC headers.

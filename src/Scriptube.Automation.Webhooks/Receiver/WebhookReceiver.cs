@@ -19,12 +19,17 @@ public sealed class WebhookReceiver : IAsyncDisposable
         _store = store;
     }
 
-    /// <summary>Starts the listener on <c>http://localhost:{port}/</c> and begins the accept loop.</summary>
+    /// <summary>Starts the listener on <c>http://*:{port}/</c> and begins the accept loop.</summary>
+    /// <remarks>
+    /// Using <c>*</c> (any host) rather than <c>localhost</c> ensures the listener accepts
+    /// requests forwarded by ngrok, which preserves the original <c>Host</c> header
+    /// (e.g. <c>xxxx.ngrok-free.app</c>) instead of <c>localhost</c>.
+    /// </remarks>
     public void Start(int port)
     {
         _cts = new CancellationTokenSource();
         _listener = new HttpListener();
-        _listener.Prefixes.Add($"http://localhost:{port}/");
+        _listener.Prefixes.Add($"http://*:{port}/");
         _listener.Start();
         _acceptLoop = Task.Run(() => AcceptLoopAsync(_cts.Token));
     }
