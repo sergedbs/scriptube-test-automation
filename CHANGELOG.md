@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-02-25
+
+### Added
+
+#### Regression Test Suite — Core Transcript Flows (`Scriptube.Automation.Tests`)
+
+- `SubmitPollExportTests` — 5 active tests covering the full Submit → Poll → Export E2E flow:
+  - Single English manual video (`tstENMAN001`) → poll to completion → transcript text non-empty
+  - Batch of 3 success videos → all items reach `completed` status
+  - Playlist URL (`PLtstOK00001`) → batch expands to ≥ 1 item, all items complete
+  - Export in JSON format → response is valid JSON with `video_id` field present
+  - Export in TXT format → non-empty plain-text response
+  - SRT export test created but `[Ignore]`d — SRT is outside the supported format set (`json`, `csv`, `txt`)
+- `CreditDeductionTests` — 3 active tests verifying credit balance changes after processing:
+  - Balance before submit is a valid non-negative integer
+  - Submit `tstENMAN001` → poll complete → balance decreases by exactly 4 credits
+  - Submit `tstKOONL001` with `translate_to_english` → batch completes → deduction ≥ 4 credits
+  - Precheck-matches-actual test created but `[Ignore]`d — `POST /api/v1/credits/precheck` returns HTTP 405
+- `PrecheckEstimateTests` — full test bodies for precheck and estimate correlation; all `[Ignore]`d — both `POST /api/v1/credits/precheck` and `POST /api/v1/credits/estimate` return HTTP 405
+- `BatchCancelTests` — full test bodies for cancel flow (submit → cancel immediately → verify `cancelled` status, cancel non-existent ID → 404, no credits charged); all `[Ignore]`d — `POST …/cancel` returns HTTP 405
+- `RetryFailedTests` — full test bodies for retry-failed flow (submit error videos → items fail → retry → HTTP 2xx, retry non-existent batch → 404); all `[Ignore]`d — `POST …/retry-failed` returns HTTP 405
+- `BatchLifecycleTests` — full test bodies for rerun and delete operations (rerun after completion, rerun non-existent → 404, delete → 200/204 → GET → 404); all `[Ignore]`d — both `POST …/rerun` and `DELETE /api/v1/transcripts/{batch_id}` return HTTP 405
+- All test classes tagged `[Category("Regression")]`, `[Category("API")]`, `[AllureSuite("Regression")]`, and feature/tag attributes for NUnit filter and Allure report grouping
+- Best-effort `[TearDown]` cleanup in every test class silently swallows 405 errors from `DeleteAsync` so test isolation is maintained even when the delete endpoint is unavailable
+
 ## [0.3.0] - 2026-02-25
 
 ### Added
@@ -132,7 +157,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed placeholder `Class1.cs` from all `src/` projects and `UnitTest1.cs` from the test project
 
-[Unreleased]: https://github.com/sergedbs/scriptube-test-automation/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/sergedbs/scriptube-test-automation/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/sergedbs/scriptube-test-automation/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/sergedbs/scriptube-test-automation/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/sergedbs/scriptube-test-automation/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/sergedbs/scriptube-test-automation/compare/initial...v0.1.0
