@@ -7,6 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-02-24
+
+### Added
+
+#### Request / Response Models — `Scriptube.Automation.Api`
+
+- `TranscriptRequest` — `urls[]`, `use_byok`, `translate_to_english` (matches OpenAPI schema exactly)
+- `TranscriptSubmitResponse` — `batch_id`, `batch_number`, `status`, `url_count`, `message`, `key_source`
+- `BatchStatusResponse` — `batch_id`, `batch_number`, `status`, `created_at`, `completed_at`, `items[]`
+- `TranscriptItemResponse` — `video_id`, `url`, `title`, `channel`, `status`, `transcript_text`, `transcript_language`, `duration_seconds`, `error`
+- `CreditBalanceResponse` — `credits_balance`, `plan`, `daily_used`, `daily_limit`
+- `PrecheckRequest` / `PrecheckResponse` + `PrecheckItemResponse` — URL pre-validation with per-item estimated cost
+- `EstimateRequest` / `EstimateResponse` + `EstimateItemResponse` — video-ID cost estimation
+- `UsageResponse` — `plan`, `daily_used`, `daily_limit`, `daily_remaining`, `monthly_used`, `total_processed`
+- `PlansListResponse` + `PlanInfoResponse` — full plan catalogue with pricing, limits, and feature list
+- `UserInfoResponse` — `user_id`, `email`, `plan`, `email_verified`, `credits_balance`, `total_videos_processed`, `created_at`
+- `HealthResponse` — `status`, `version`
+- `CreditCostsResponse` — cost table map
+- `CreditHistoryResponse` + `CreditTransactionResponse` — paginated transaction log
+- `WebhookResponse` — full webhook detail model
+- `WebhookStatusResponse` — status envelope for register / delete / retry operations
+- `WebhookListResponse` — paginated list of webhooks
+- `AvailableEventsResponse` — event names + descriptions map
+- `DeliveryLogsResponse` + `DeliveryLogResponse` — paginated webhook delivery history
+- `TestEventResponse` — test-fire result with delivery ID and response code
+- `HttpValidationError` + `ValidationError` — exact mapping of the OpenAPI `HTTPValidationError` / `ValidationError` 422 schemas (`loc` typed as `List<JsonElement>` to handle mixed string/integer path segments)
+- `ApiErrorResponse` — generic 4xx/5xx error envelope (`detail`, `message`, `code`)
+- `WebhookRegisterRequest` — `url` (≤ 2048 chars), `events[]` (≥ 1 item), `secret` (16–256 chars)
+
+#### Builder Pattern — `Scriptube.Automation.Api`
+
+- `TranscriptRequestBuilder` — fluent builder with `.WithUrl()`, `.WithUrls()`, `.WithPlaylist()`, `.WithTranslation()`, `.WithByok()`, `.Build()`; guards against empty URL lists
+- `PrecheckRequestBuilder` — fluent builder with `.WithUrl()`, `.WithUrls()`, `.Build()`; guards against empty URL lists
+
+#### API Service Clients — `Scriptube.Automation.Api`
+
+- `TranscriptsClient` — `SubmitAsync`, `GetBatchAsync`, `ListBatchesAsync`, `PollUntilCompleteAsync`, `ExportAsync`, `CancelAsync`, `RetryFailedAsync`, `RerunAsync`, `DeleteAsync`; `PollUntilCompleteAsync` reads poll interval and timeout from `TestSettings.Timeouts` with no hardcoded values; terminates on `completed`, `failed`, or `cancelled`
+- `CreditsClient` — `GetBalanceAsync`, `PrecheckAsync`, `EstimateAsync`, `GetCostsAsync`, `GetHistoryAsync`
+- `UserClient` — `GetUserAsync`
+- `UsageClient` — `GetUsageAsync`
+- `PlansClient` — `GetPlansAsync`
+- `SeoToolClient` — `GetTranscriptAsync`; constructed with `requiresAuth: false` — no `X-API-Key` header injected
+
+#### Test Data Constants — `Scriptube.Automation.Api`
+
+- `VideoIds` — 18 `tst*` video ID constants (11 success paths, 7 error paths) with corresponding pre-built `*Url` fields and a `ToUrl(videoId)` helper
+- `PlaylistUrls` — 4 `PLtst*` playlist URL constants (`AllSuccess`, `Mixed`, `AllMixed`, `AllErrors`)
+- `ExportFormats` — `Json`, `Txt`, `Srt` string constants matching the export endpoint's `format` query parameter
+
 ## [0.1.0] - 2026-02-24
 
 ### Added
@@ -64,4 +113,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed placeholder `Class1.cs` from all `src/` projects and `UnitTest1.cs` from the test project
 
 [Unreleased]: https://github.com/sergedbs/scriptube-test-automation/compare/initial...HEAD
-[0.1.0]: https://github.com/sergedbs/scriptube-test-automation/compare/initial...HEAD
