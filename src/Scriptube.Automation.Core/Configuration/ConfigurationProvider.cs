@@ -20,6 +20,7 @@ namespace Scriptube.Automation.Core.Configuration;
 ///   NgrokApiPort         → NGROK_API_PORT
 ///   ViewportWidth        → BROWSER_VIEWPORT_WIDTH
 ///   ViewportHeight       → BROWSER_VIEWPORT_HEIGHT
+///   BrowserHeadless      → BROWSER_HEADLESS
 ///
 /// Nested timeout/retry settings can also be overridden via IConfiguration conventions:
 ///   e.g. Timeouts__WebhookDispatchWaitSeconds=15 or Retry__Count=5
@@ -92,6 +93,15 @@ public static class ConfigurationProvider
             Browser = config["SCRIPTUBE_BROWSER"]
                       ?? config["Browser"]
                       ?? "chromium",
+
+            BrowserHeadless = !bool.TryParse(
+                config["BROWSER_HEADLESS"] ?? config["BrowserHeadless"], out var headless)
+                || headless,
+
+            BrowserSlowMo = int.TryParse(
+                config["BROWSER_SLOW_MO"] ?? config["BrowserSlowMo"], out var slowMo)
+                ? slowMo
+                : 0,
 
             WebhookReceiverUrl = config["WEBHOOK_RECEIVER_URL"]
                                  ?? config["WebhookReceiverUrl"],

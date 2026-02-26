@@ -6,7 +6,7 @@ namespace Scriptube.Automation.Api.TestData;
 /// </summary>
 public static class VideoIds
 {
-    // ── Success videos ────────────────────────────────────────────────────────
+    // Success videos
 
     /// <summary>English manual captions — cheapest path (1 credit).</summary>
     public const string EnglishManual = "tstENMAN001";
@@ -47,7 +47,7 @@ public static class VideoIds
     /// <summary>Cached ElevenLabs transcript.</summary>
     public const string CachedElevenLabs = "tstCACEL001";
 
-    // ── Error videos ─────────────────────────────────────────────────────────
+    // Error videos
 
     /// <summary>Private video — returns item-level error.</summary>
     public const string Private = "tstPRIVT001";
@@ -70,7 +70,7 @@ public static class VideoIds
     /// <summary>Malformed data — returns processing error.</summary>
     public const string Invalid = "tstINVLD001";
 
-    // ── Full YouTube URLs ─────────────────────────────────────────────────────
+    // Full YouTube URLs
 
     private const string YouTubeBase = "https://www.youtube.com/watch?v=";
 

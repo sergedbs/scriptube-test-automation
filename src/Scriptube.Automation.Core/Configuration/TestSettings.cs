@@ -9,6 +9,13 @@ public record TestSettings
     public TimeoutSettings Timeouts { get; init; } = new();
     public RetrySettings Retry { get; init; } = new();
     public string Browser { get; init; } = "chromium";
+
+    /// <summary>Whether the browser should launch in headless mode. Defaults to <c>true</c>.</summary>
+    public bool BrowserHeadless { get; init; } = true;
+
+    /// <summary>Slow-motion delay in milliseconds applied to every Playwright action. Set to 0 to disable. Useful for visual debugging.</summary>
+    public int BrowserSlowMo { get; init; } = 0;
+
     /// <summary>
     /// External webhook receiver URL. When non-empty, the in-process receiver and ngrok tunnel
     /// are skipped entirely and this URL is used for webhook registration.
@@ -65,6 +72,12 @@ public record TimeoutSettings
     /// allowing the server to settle the cancellation.
     /// </summary>
     public int CancelSettleSeconds { get; init; } = 2;
+
+    /// <summary>
+    /// Milliseconds to wait between authentication-related UI tests to avoid
+    /// triggering the server's login rate limiter (nginx 503).
+    /// </summary>
+    public int AuthCooldownMs { get; init; } = 3_000;
 }
 
 public record RetrySettings
