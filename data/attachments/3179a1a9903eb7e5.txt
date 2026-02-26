@@ -1,0 +1,30 @@
+[07:18:36 INF] → POST https://scriptube.me/api/v1/transcripts
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 102
+Body: {"urls":["https://www.youtube.com/watch?v=tstMULTI001"],"use_byok":false,"translate_to_english":false}
+[07:18:36 INF] ← 202 POST https://scriptube.me/api/v1/transcripts (49ms)
+Body: {"batch_id":"ee267309-4fb3-4ce0-83c4-34f0a2775dd9","batch_number":319,"status":"pending","url_count":1,"message":"Batch submitted for processing. Poll GET /api/v1/transcripts/{batch_id} for results.","key_source":"system"}
+[07:18:36 INF] → GET https://scriptube.me/api/v1/transcripts/ee267309-4fb3-4ce0-83c4-34f0a2775dd9
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:36 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/ee267309-4fb3-4ce0-83c4-34f0a2775dd9 (15ms)
+Body: {"batch_id":"ee267309-4fb3-4ce0-83c4-34f0a2775dd9","batch_number":319,"status":"processing","created_at":"2026-02-26T07:18:36.231620Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstMULTI001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}
+[07:18:41 INF] → GET https://scriptube.me/api/v1/transcripts/ee267309-4fb3-4ce0-83c4-34f0a2775dd9
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:41 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/ee267309-4fb3-4ce0-83c4-34f0a2775dd9 (17ms)
+Body: {"batch_id":"ee267309-4fb3-4ce0-83c4-34f0a2775dd9","batch_number":319,"status":"failed","created_at":"2026-02-26T07:18:36.231620Z","completed_at":null,"items":[{"video_id":"tstMULTI001","url":"https://www.youtube.com/watch?v=tstMULTI001","title":"Test Video: Multiple Language Captions","channel":"Scriptube Global Test","status":"failed","transcript_text":"This test video has manual captions available in multiple languages including English, Spanish, and Japanese. Scriptube should prefer the English manual captions since they match the requested language. The system should not charge for translation since English captions are directly available. This tests the multi-language selection logic in the transcript fetching pipeline.","transcript_language":"en","duration_seconds":210,"error":"Insufficient credits: need 4, have 0"}]}
+[07:18:41 INF] → DELETE https://scriptube.me/api/v1/transcripts/ee267309-4fb3-4ce0-83c4-34f0a2775dd9
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:41 INF] ← 405 DELETE https://scriptube.me/api/v1/transcripts/ee267309-4fb3-4ce0-83c4-34f0a2775dd9 (4ms)
+Body: {"detail":"Method Not Allowed"}

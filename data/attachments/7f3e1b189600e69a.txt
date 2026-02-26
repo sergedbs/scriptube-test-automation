@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/webhooks/a7569a23-ed39-4728-94bf-89ecbf09e8cf/logs?limit=50&offset=0
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (21ms) ===
+Status: 200
+--- Body ---
+{"deliveries":[],"total":0}

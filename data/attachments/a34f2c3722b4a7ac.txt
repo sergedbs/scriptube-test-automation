@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/4b83283e-936a-46ba-a750-9de72ac83e70
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (14ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"4b83283e-936a-46ba-a750-9de72ac83e70","batch_number":297,"status":"failed","created_at":"2026-02-26T07:16:43.668532Z","completed_at":"2026-02-26T07:16:45.339485Z","items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstINVLD001","title":null,"channel":null,"status":"failed","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":"Could not fetch transcript from YouTube."}]}

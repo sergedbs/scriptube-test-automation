@@ -1,0 +1,23 @@
+[07:16:22 INF] → POST https://scriptube.me/api/webhooks/register
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 123
+Body: {"url":"https://d855-68-220-61-185.ngrok-free.app","events":["batch.completed"],"secret":"regression-test-secret-key-5678"}
+[07:16:22 INF] ← 201 POST https://scriptube.me/api/webhooks/register (36ms)
+Body: {"status":"active","webhook_id":"aed00245-f73e-4379-9b17-289345beebfc","message":"Webhook registered successfully"}
+[07:16:22 INF] → DELETE https://scriptube.me/api/webhooks/aed00245-f73e-4379-9b17-289345beebfc
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:16:22 INF] ← 200 DELETE https://scriptube.me/api/webhooks/aed00245-f73e-4379-9b17-289345beebfc (16ms)
+Body: {"status":"deleted","webhook_id":"aed00245-f73e-4379-9b17-289345beebfc","message":null}
+[07:16:22 INF] → GET https://scriptube.me/api/webhooks/aed00245-f73e-4379-9b17-289345beebfc
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:16:22 INF] ← 404 GET https://scriptube.me/api/webhooks/aed00245-f73e-4379-9b17-289345beebfc (12ms)
+Body: {"detail":"Webhook not found"}

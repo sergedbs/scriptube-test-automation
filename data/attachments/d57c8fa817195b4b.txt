@@ -1,0 +1,30 @@
+[07:18:41 INF] → POST https://scriptube.me/api/v1/transcripts
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 102
+Body: {"urls":["https://www.youtube.com/watch?v=tstNOCAP001"],"use_byok":false,"translate_to_english":false}
+[07:18:41 INF] ← 202 POST https://scriptube.me/api/v1/transcripts (49ms)
+Body: {"batch_id":"edbf1ae0-d728-4567-b6f0-f8083eeb2f05","batch_number":320,"status":"pending","url_count":1,"message":"Batch submitted for processing. Poll GET /api/v1/transcripts/{batch_id} for results.","key_source":"system"}
+[07:18:41 INF] → GET https://scriptube.me/api/v1/transcripts/edbf1ae0-d728-4567-b6f0-f8083eeb2f05
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:41 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/edbf1ae0-d728-4567-b6f0-f8083eeb2f05 (20ms)
+Body: {"batch_id":"edbf1ae0-d728-4567-b6f0-f8083eeb2f05","batch_number":320,"status":"processing","created_at":"2026-02-26T07:18:41.320031Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstNOCAP001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}
+[07:18:46 INF] → GET https://scriptube.me/api/v1/transcripts/edbf1ae0-d728-4567-b6f0-f8083eeb2f05
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:46 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/edbf1ae0-d728-4567-b6f0-f8083eeb2f05 (20ms)
+Body: {"batch_id":"edbf1ae0-d728-4567-b6f0-f8083eeb2f05","batch_number":320,"status":"failed","created_at":"2026-02-26T07:18:41.320031Z","completed_at":null,"items":[{"video_id":"tstNOCAP001","url":"https://www.youtube.com/watch?v=tstNOCAP001","title":"Test Video: No Captions Available","channel":"Scriptube Test Channel","status":"failed","transcript_text":"This is the ElevenLabs AI transcription of a test video that has no YouTube captions. The audio was downloaded via proxy and sent to ElevenLabs Scribe API for transcription. This path costs more credits because it involves audio download and AI processing. The total cost includes audio proxy base cost plus per minute charges plus the ElevenLabs transcription cost of ten credits per minute.","transcript_language":"en","duration_seconds":125,"error":"Insufficient credits: need 38, have 0"}]}
+[07:18:46 INF] → DELETE https://scriptube.me/api/v1/transcripts/edbf1ae0-d728-4567-b6f0-f8083eeb2f05
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:46 INF] ← 405 DELETE https://scriptube.me/api/v1/transcripts/edbf1ae0-d728-4567-b6f0-f8083eeb2f05 (4ms)
+Body: {"detail":"Method Not Allowed"}

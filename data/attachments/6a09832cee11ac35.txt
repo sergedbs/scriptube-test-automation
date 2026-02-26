@@ -1,0 +1,13 @@
+=== REQUEST ===
+DELETE https://scriptube.me/api/webhooks/096295ab-b828-4b66-a22b-e10ad350d4f9
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (36ms) ===
+Status: 200
+--- Body ---
+{"status":"deleted","webhook_id":"096295ab-b828-4b66-a22b-e10ad350d4f9","message":null}

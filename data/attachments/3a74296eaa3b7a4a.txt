@@ -1,0 +1,30 @@
+[07:18:20 INF] → POST https://scriptube.me/api/v1/transcripts
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 102
+Body: {"urls":["https://www.youtube.com/watch?v=tstELABS001"],"use_byok":false,"translate_to_english":false}
+[07:18:20 INF] ← 202 POST https://scriptube.me/api/v1/transcripts (56ms)
+Body: {"batch_id":"cc53f0c1-9616-4575-966c-80106c843865","batch_number":316,"status":"pending","url_count":1,"message":"Batch submitted for processing. Poll GET /api/v1/transcripts/{batch_id} for results.","key_source":"system"}
+[07:18:20 INF] → GET https://scriptube.me/api/v1/transcripts/cc53f0c1-9616-4575-966c-80106c843865
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:20 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/cc53f0c1-9616-4575-966c-80106c843865 (22ms)
+Body: {"batch_id":"cc53f0c1-9616-4575-966c-80106c843865","batch_number":316,"status":"processing","created_at":"2026-02-26T07:18:20.916058Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstELABS001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}
+[07:18:25 INF] → GET https://scriptube.me/api/v1/transcripts/cc53f0c1-9616-4575-966c-80106c843865
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:25 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/cc53f0c1-9616-4575-966c-80106c843865 (18ms)
+Body: {"batch_id":"cc53f0c1-9616-4575-966c-80106c843865","batch_number":316,"status":"failed","created_at":"2026-02-26T07:18:20.916058Z","completed_at":null,"items":[{"video_id":"tstELABS001","url":"https://www.youtube.com/watch?v=tstELABS001","title":"Test Video: Force ElevenLabs Transcription","channel":"Scriptube Test Channel","status":"failed","transcript_text":"This test video has YouTube captions available but the force ElevenLabs flag was set so the system skipped YouTube entirely and went directly to ElevenLabs AI transcription. This tests the force_elevenlabs parameter and verifies that credits are charged at the ElevenLabs rate even when cheaper YouTube captions exist. Duration is three minutes and fifteen seconds.","transcript_language":"en","duration_seconds":195,"error":"Insufficient credits: need 50, have 0"}]}
+[07:18:25 INF] → DELETE https://scriptube.me/api/v1/transcripts/cc53f0c1-9616-4575-966c-80106c843865
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:25 INF] ← 405 DELETE https://scriptube.me/api/v1/transcripts/cc53f0c1-9616-4575-966c-80106c843865 (4ms)
+Body: {"detail":"Method Not Allowed"}

@@ -1,0 +1,3 @@
+[07:14:24 DBG] UI navigate → https://scriptube.me/ui/credits
+[07:14:25 DBG] UI page load complete (NetworkIdle)
+[07:14:25 DBG] UI page load complete (NetworkIdle)

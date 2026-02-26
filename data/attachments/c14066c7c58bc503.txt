@@ -1,0 +1,4 @@
+[07:19:03 DBG] UI navigate → https://scriptube.me/ui/login
+[07:19:03 DBG] UI page load complete (NetworkIdle)
+[07:19:03 DBG] UI page load complete (NetworkIdle)
+[07:19:05 DBG] UI page load complete (NetworkIdle)

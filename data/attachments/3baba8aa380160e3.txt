@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/a6ae10b3-3be4-4f6d-95fb-cbc5eba7845f
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (17ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"a6ae10b3-3be4-4f6d-95fb-cbc5eba7845f","batch_number":321,"status":"failed","created_at":"2026-02-26T07:18:46.421318Z","completed_at":null,"items":[{"video_id":"tstESAUT001","url":"https://www.youtube.com/watch?v=tstESAUT001","title":"Video de Prueba: Solo Subtítulos en Español","channel":"Canal de Prueba Scriptube","status":"failed","transcript_text":"Hola y bienvenidos a este video de prueba. Este video solo tiene subtítulos en español generados automáticamente. Scriptube debería detectar este texto y traducirlo al inglés. El costo de traducción es de doce créditos por cada mil caracteres. Este texto se ha escrito lo suficientemente largo para probar la ruta de traducción correctamente.","transcript_language":"es","duration_seconds":160,"error":"Insufficient credits: need 4, have 0"}]}

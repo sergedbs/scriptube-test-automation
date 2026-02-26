@@ -1,0 +1,15 @@
+=== REQUEST ===
+POST https://scriptube.me/api/webhooks/register
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 94
+--- Body ---
+{"url":"http://10.0.0.1/x","events":["batch.completed"],"secret":"smoke-test-secret-key-1234"}
+
+=== RESPONSE (202ms) ===
+Status: 400
+--- Body ---
+{"detail":"Invalid webhook URL: Private/reserved IP not allowed: 10.0.0.1"}

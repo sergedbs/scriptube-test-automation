@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/f9746af2-7f97-4218-b18a-afb7360d64c8
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (17ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"f9746af2-7f97-4218-b18a-afb7360d64c8","batch_number":317,"status":"failed","created_at":"2026-02-26T07:18:26.026671Z","completed_at":null,"items":[{"video_id":"tstYTTRN001","url":"https://www.youtube.com/watch?v=tstYTTRN001","title":"Vidéo Test: Traduction Automatique YouTube","channel":"Chaîne Test Scriptube","status":"failed","transcript_text":"Welcome to this test video. This transcript was originally in French and YouTube automatically translated it to English for free. This tests the YouTube built-in translation path which does not incur any translation credits. The system should record youtube_translated=true and original_language=fr.","transcript_language":"en","duration_seconds":175,"error":"Insufficient credits: need 4, have 0"}]}

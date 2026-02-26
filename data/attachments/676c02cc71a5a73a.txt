@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/edbf1ae0-d728-4567-b6f0-f8083eeb2f05
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (20ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"edbf1ae0-d728-4567-b6f0-f8083eeb2f05","batch_number":320,"status":"processing","created_at":"2026-02-26T07:18:41.320031Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstNOCAP001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}

@@ -1,9 +1,0 @@
-[05:32:54 INF] → POST https://scriptube.me/api/v1/transcripts
-Headers:   User-Agent: RestSharp/112.1.0.0
-  X-API-Key: ***MASKED***
-  Accept: application/json
-  Content-Type: application/json; charset=utf-8
-  Content-Length: 57
-Body: {"urls":[],"use_byok":false,"translate_to_english":false}
-[05:32:54 INF] ← 422 POST https://scriptube.me/api/v1/transcripts (24ms)
-Body: {"detail":"At least one URL required"}

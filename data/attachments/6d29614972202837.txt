@@ -1,0 +1,30 @@
+[07:18:15 INF] → POST https://scriptube.me/api/v1/transcripts
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 102
+Body: {"urls":["https://www.youtube.com/watch?v=tstENAUT001"],"use_byok":false,"translate_to_english":false}
+[07:18:15 INF] ← 202 POST https://scriptube.me/api/v1/transcripts (46ms)
+Body: {"batch_id":"e25637ec-741c-4f01-913d-8221125a8e2e","batch_number":315,"status":"pending","url_count":1,"message":"Batch submitted for processing. Poll GET /api/v1/transcripts/{batch_id} for results.","key_source":"system"}
+[07:18:15 INF] → GET https://scriptube.me/api/v1/transcripts/e25637ec-741c-4f01-913d-8221125a8e2e
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:15 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/e25637ec-741c-4f01-913d-8221125a8e2e (21ms)
+Body: {"batch_id":"e25637ec-741c-4f01-913d-8221125a8e2e","batch_number":315,"status":"processing","created_at":"2026-02-26T07:18:15.814074Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstENAUT001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}
+[07:18:20 INF] → GET https://scriptube.me/api/v1/transcripts/e25637ec-741c-4f01-913d-8221125a8e2e
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:20 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/e25637ec-741c-4f01-913d-8221125a8e2e (20ms)
+Body: {"batch_id":"e25637ec-741c-4f01-913d-8221125a8e2e","batch_number":315,"status":"failed","created_at":"2026-02-26T07:18:15.814074Z","completed_at":null,"items":[{"video_id":"tstENAUT001","url":"https://www.youtube.com/watch?v=tstENAUT001","title":"Test Video: English Auto-Generated Captions","channel":"Scriptube Test Channel","status":"failed","transcript_text":"hello and welcome to this test video um this is an auto generated transcript so you might notice some uh imperfections in the text like filler words and occasional misrecognitions the speech recognition system does its best but it isnt perfect this helps test how scriptube handles auto generated captions which are the most common type on youtube approximately eighty percent of youtube videos use auto generated captions rather than manually created ones this transcript is designed to be realistic with natural speech patterns","transcript_language":"en","duration_seconds":240,"error":"Insufficient credits: need 4, have 0"}]}
+[07:18:20 INF] → DELETE https://scriptube.me/api/v1/transcripts/e25637ec-741c-4f01-913d-8221125a8e2e
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[07:18:20 INF] ← 405 DELETE https://scriptube.me/api/v1/transcripts/e25637ec-741c-4f01-913d-8221125a8e2e (4ms)
+Body: {"detail":"Method Not Allowed"}

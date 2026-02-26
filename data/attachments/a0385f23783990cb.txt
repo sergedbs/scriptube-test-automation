@@ -1,0 +1,13 @@
+=== REQUEST ===
+POST https://scriptube.me/api/webhooks/630b5556-c2e2-4428-9b03-e2ccebb1f081/retry?delivery_id=070deaf9-a8e3-4225-b005-1aa96145eaae
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (14ms) ===
+Status: 404
+--- Body ---
+{"detail":"Delivery not found, not failed, or webhook inactive"}
