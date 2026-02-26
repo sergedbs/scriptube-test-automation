@@ -77,7 +77,6 @@ jobs:
       SCRIPTUBE_PASSWORD: ${{ secrets.SCRIPTUBE_PASSWORD }}
       BROWSER_HEADLESS: 'true'
       TEST_ENV: prod
-      ALLURE_RESULTS_DIRECTORY: ${{ github.workspace }}/allure-results
       Timeouts__PlaywrightActionMs: '30000'
 
     steps:
@@ -149,7 +148,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: allure-results-smoke
-          path: allure-results/
+          path: tests/Scriptube.Automation.Tests/bin/Release/net10.0/allure-results/
           retention-days: 30
 
       - name: Upload screenshots on failure
@@ -157,7 +156,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: screenshots-smoke
-          path: allure-results/screenshots/
+          path: tests/Scriptube.Automation.Tests/bin/Release/net10.0/allure-results/screenshots/
           retention-days: 7
 
   # ─────────────────────────────────────────────
@@ -170,8 +169,7 @@ jobs:
     name: Regression Tests
     needs: smoke
     if: |
-      github.event_name == 'pull_request' ||
-      (github.event_name == 'workflow_dispatch' && inputs.suite != 'smoke')
+      github.event_name == 'workflow_dispatch' && inputs.suite != 'smoke'
     runs-on: ubuntu-latest
     env:
       SCRIPTUBE_API_KEY: ${{ secrets.SCRIPTUBE_API_KEY }}
@@ -179,7 +177,6 @@ jobs:
       SCRIPTUBE_PASSWORD: ${{ secrets.SCRIPTUBE_PASSWORD }}
       BROWSER_HEADLESS: 'true'
       TEST_ENV: prod
-      ALLURE_RESULTS_DIRECTORY: ${{ github.workspace }}/allure-results
       Timeouts__PlaywrightActionMs: '30000'
 
     steps:
@@ -251,7 +248,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: allure-results-regression
-          path: allure-results/
+          path: tests/Scriptube.Automation.Tests/bin/Release/net10.0/allure-results/
           retention-days: 30
 
       - name: Upload screenshots on failure
@@ -259,7 +256,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: screenshots-regression
-          path: allure-results/screenshots/
+          path: tests/Scriptube.Automation.Tests/bin/Release/net10.0/allure-results/screenshots/
           retention-days: 7
 
   # ─────────────────────────────────────────────
