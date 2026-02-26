@@ -23,13 +23,12 @@ public sealed class PlansSmokeTests : BaseApiTest
     public override void SetUp()
     {
         base.SetUp();
-        _plans = new PlansClient(Settings);
+        _plans = CreateClient<PlansClient>();
     }
 
     [TearDown]
     public override async Task TearDown()
     {
-        _plans.Dispose();
         await base.TearDown();
     }
 

@@ -35,7 +35,7 @@ public sealed class BatchLifecycleTests : BaseApiTest
     public override void SetUp()
     {
         base.SetUp();
-        _transcripts = new TranscriptsClient(Settings);
+        _transcripts = CreateClient<TranscriptsClient>();
         _batchIdsToCleanup.Clear();
     }
 
@@ -48,7 +48,6 @@ public sealed class BatchLifecycleTests : BaseApiTest
             catch { /* best-effort cleanup */ }
         }
 
-        _transcripts.Dispose();
         await base.TearDown();
     }
 

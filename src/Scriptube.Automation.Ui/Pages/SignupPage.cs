@@ -1,3 +1,4 @@
+using Allure.Net.Commons;
 using Microsoft.Playwright;
 
 namespace Scriptube.Automation.Ui.Pages;
@@ -14,25 +15,27 @@ public sealed class SignupPage : BasePage
     public SignupPage(IPage page) : base(page) { }
 
     /// <summary>Fills and submits the sign-up form.</summary>
-    public async Task SignupAsync(string email, string password)
-    {
-        await EmailInput.FillAsync(email);
-        await PasswordInput.FillAsync(password);
-        await SubmitButton.ClickAsync();
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-    }
+    public Task SignupAsync(string email, string password) =>
+        AllureApi.Step($"Sign up with email '{email}'", async () =>
+        {
+            await EmailInput.FillAsync(email);
+            await PasswordInput.FillAsync(password);
+            await SubmitButton.ClickAsync();
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        });
 
     /// <summary>Returns the error message text, or <see cref="string.Empty"/> if none appears within the configured action timeout.</summary>
-    public async Task<string> GetErrorMessageAsync()
-    {
-        try
+    public Task<string> GetErrorMessageAsync() =>
+        AllureApi.Step("Get signup error message", async () =>
         {
-            await ErrorMessage.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-            return await ErrorMessage.InnerTextAsync();
-        }
-        catch (PlaywrightException)
-        {
-            return string.Empty;
-        }
-    }
+            try
+            {
+                await ErrorMessage.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+                return await ErrorMessage.InnerTextAsync();
+            }
+            catch (PlaywrightException)
+            {
+                return string.Empty;
+            }
+        });
 }

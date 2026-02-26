@@ -1,3 +1,4 @@
+using Allure.Net.Commons;
 using Microsoft.Playwright;
 using Scriptube.Automation.Ui.Components;
 
@@ -19,13 +20,15 @@ public sealed class CreditsPage : BasePage
     public CreditsPage(IPage page) : base(page) { }
 
     /// <summary>Reads and parses the displayed credit balance as a whole number.</summary>
-    public async Task<int> GetDisplayedBalanceAsync()
-    {
-        var raw = (await BalanceDisplay.InnerTextAsync()).Trim();
-        var digits = new string(raw.Where(char.IsDigit).ToArray());
-        return int.Parse(digits, System.Globalization.CultureInfo.InvariantCulture);
-    }
+    public Task<int> GetDisplayedBalanceAsync() =>
+        AllureApi.Step("Get displayed credit balance", async () =>
+        {
+            var raw = (await BalanceDisplay.InnerTextAsync()).Trim();
+            var digits = new string(raw.Where(char.IsDigit).ToArray());
+            return int.Parse(digits, System.Globalization.CultureInfo.InvariantCulture);
+        });
 
-    public async Task<int> GetCreditPackCountAsync() =>
-        await CreditPackCards.CountAsync();
+    public Task<int> GetCreditPackCountAsync() =>
+        AllureApi.Step("Get credit pack count",
+            () => CreditPackCards.CountAsync());
 }

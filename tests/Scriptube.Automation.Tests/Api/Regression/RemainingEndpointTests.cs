@@ -27,17 +27,14 @@ public sealed class RemainingEndpointTests : BaseApiTest
     public override void SetUp()
     {
         base.SetUp();
-        _usage = new UsageClient(Settings);
-        _credits = new CreditsClient(Settings);
-        _transcripts = new TranscriptsClient(Settings);
+        _usage = CreateClient<UsageClient>();
+        _credits = CreateClient<CreditsClient>();
+        _transcripts = CreateClient<TranscriptsClient>();
     }
 
     [TearDown]
     public override async Task TearDown()
     {
-        _usage.Dispose();
-        _credits.Dispose();
-        _transcripts.Dispose();
         await base.TearDown();
     }
 

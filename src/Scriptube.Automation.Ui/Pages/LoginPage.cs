@@ -1,3 +1,4 @@
+using Allure.Net.Commons;
 using Microsoft.Playwright;
 
 namespace Scriptube.Automation.Ui.Pages;
@@ -16,36 +17,39 @@ public sealed class LoginPage : BasePage
     /// Fills and submits the login form, then waits for the dashboard URL.
     /// Use this on the happy path only — it asserts an implicit redirect to <c>/ui/dashboard</c>.
     /// </summary>
-    public async Task<DashboardPage> LoginAsync(string email, string password)
-    {
-        await SubmitFormAsync(email, password);
-        await Page.WaitForURLAsync("**/ui/dashboard**");
-        return new DashboardPage(Page);
-    }
+    public Task<DashboardPage> LoginAsync(string email, string password) =>
+        AllureApi.Step($"Login with email '{email}'", async () =>
+        {
+            await SubmitFormAsync(email, password);
+            await Page.WaitForURLAsync("**/ui/dashboard**");
+            return new DashboardPage(Page);
+        });
 
     /// <summary>
     /// Fills and submits the login form without waiting for any navigation.
     /// The caller is responsible for waiting on the expected outcome (error element or URL change).
     /// Use this when testing failed login scenarios (wrong password, blank fields).
     /// </summary>
-    public async Task SubmitFormAsync(string email, string password)
-    {
-        await EmailInput.FillAsync(email);
-        await PasswordInput.FillAsync(password);
-        await SubmitButton.ClickAsync();
-    }
+    public Task SubmitFormAsync(string email, string password) =>
+        AllureApi.Step($"Submit login form with email '{email}'", async () =>
+        {
+            await EmailInput.FillAsync(email);
+            await PasswordInput.FillAsync(password);
+            await SubmitButton.ClickAsync();
+        });
 
     /// <summary>Returns the error message text, or <see cref="string.Empty"/> if none appears within the configured action timeout.</summary>
-    public async Task<string> GetErrorMessageAsync()
-    {
-        try
+    public Task<string> GetErrorMessageAsync() =>
+        AllureApi.Step("Get login error message", async () =>
         {
-            await ErrorMessage.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-            return await ErrorMessage.InnerTextAsync();
-        }
-        catch (PlaywrightException)
-        {
-            return string.Empty;
-        }
-    }
+            try
+            {
+                await ErrorMessage.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+                return await ErrorMessage.InnerTextAsync();
+            }
+            catch (PlaywrightException)
+            {
+                return string.Empty;
+            }
+        });
 }
