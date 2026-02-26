@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-02-26
+
+### Added
+
+#### Allure Reporting Integration (`Scriptube.Automation.Core`, `Scriptube.Automation.Ui`, `Scriptube.Automation.Tests`)
+
+- `[AllureNUnit]` applied to `BaseTest` — activates Allure's NUnit lifecycle hooks (result JSON files, step recording, attachment persistence) for every derived fixture in a single place; `Allure.NUnit 2.14.0` added to `Scriptube.Automation.Core.csproj` (supersedes the now-transitive `Allure.Net.Commons` explicit reference)
+- `BaseApiTest.CreateClient<T>()` — factory method that instantiates any `ApiClientBase` subclass, automatically attaches `AllureRestLogger` for request/response step logging, and registers the client in a `_managedClients` list for automatic `Detach` + `Dispose` in `TearDown`; all 11 API/Webhook test fixtures updated to use `CreateClient<T>()` instead of `new XxxClient(Settings)` with manual disposal
+- `GlobalSetupFixture.WriteAllureEnvironmentProperties()` — writes `allure-results/environment.properties` on every run with: `Base.URL`, `.NET Runtime` version, `Framework`, `HTTP.Client`, `UI.Automation`, `OS`, `Machine`, and `Date`; errors are caught and logged — never fails the test run
+- `AllureApi.Step()` wrappers added to all POM action methods:
+  - `BasePage` — `NavigateToAsync`, `WaitForLoadAsync`
+  - `LoginPage` — `LoginAsync`, `SubmitFormAsync`, `GetErrorMessageAsync`
+  - `SignupPage` — `SignupAsync`, `GetErrorMessageAsync`
+  - `DashboardPage` — `SubmitBatchAsync`, `GetBatchRowsAsync`
+  - `BatchDetailPage` — `GetStatusAsync`, `GetItemCountAsync`, `GetTranscriptPreviewTextAsync`, `ExportAsync`; `WaitUntilCompleteAsync` polls `StatusBadge.InnerTextAsync()` directly (no sub-step per poll cycle)
+  - `CreditsPage` — `GetDisplayedBalanceAsync`, `GetCreditPackCountAsync`
+  - `PricingPage` — `GetAllPlanNamesAsync`, `GetPlanPriceAsync`
+  - `NavigationHeader` — `ClickCreditsAsync`, `ClickPricingAsync`, `SignOutAsync`
+- `allureConfig.json` — added to `Scriptube.Automation.Tests` with `directory`, `title` ("Scriptube Test Automation"), and a GitHub Issues `links` URL template; marked `CopyToOutputDirectory: PreserveNewest` so the config is present alongside the test binary at runtime
+- `<NoWarn>NUnit1032</NoWarn>` added to `Scriptube.Automation.Tests.csproj` — the NUnit static analyzer cannot follow disposal through the `_managedClients` indirection in `BaseApiTest`; suppression is documented inline
+
+### Fixed
+
+- `allureConfig.json` `links` — corrected from an array-of-objects format (which caused `Newtonsoft.Json.JsonReaderException` at `AllureLifecycle` initialisation) to a plain `string[]` of URL templates, matching the `HashSet<string>` the `AllureConfiguration` deserializer expects
+- `allureConfig.json` not copied to output — the file was present in the source tree but missing from `bin/Debug/net10.0/`; adding `<None Update="allureConfig.json"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></None>` to the test project resolves the empty-results issue caused by Allure falling back to an unconfigured default directory
+
 ## [0.7.1] - 2026-02-26
 
 ### Added
