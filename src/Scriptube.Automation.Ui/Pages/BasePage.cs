@@ -1,3 +1,4 @@
+using Allure.Net.Commons;
 using Microsoft.Playwright;
 
 namespace Scriptube.Automation.Ui.Pages;
@@ -9,12 +10,14 @@ public abstract class BasePage
 
     protected BasePage(IPage page) => Page = page;
 
-    public async Task NavigateToAsync(string url)
-    {
-        await Page.GotoAsync(url);
-        await WaitForLoadAsync();
-    }
+    public Task NavigateToAsync(string url) =>
+        AllureApi.Step($"Navigate to {url}", async () =>
+        {
+            await Page.GotoAsync(url);
+            await WaitForLoadAsync();
+        });
 
     public Task WaitForLoadAsync() =>
-        Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        AllureApi.Step("Wait for page load (NetworkIdle)",
+            () => Page.WaitForLoadStateAsync(LoadState.NetworkIdle));
 }

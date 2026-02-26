@@ -1,3 +1,4 @@
+using Allure.Net.Commons;
 using Microsoft.Playwright;
 using Scriptube.Automation.Ui.Components;
 
@@ -18,22 +19,24 @@ public sealed class DashboardPage : BasePage
     public DashboardPage(IPage page) : base(page) { }
 
     /// <summary>Enters <paramref name="urls"/> (one per line), submits, confirms the cost modal, and returns the resulting <see cref="BatchDetailPage"/>.</summary>
-    public async Task<BatchDetailPage> SubmitBatchAsync(params string[] urls)
-    {
-        await UrlTextarea.ClearAsync();
-        await UrlTextarea.FillAsync(string.Join("\n", urls));
-        await SubmitButton.ClickAsync();
+    public Task<BatchDetailPage> SubmitBatchAsync(params string[] urls) =>
+        AllureApi.Step($"Submit batch with {urls.Length} URL(s)", async () =>
+        {
+            await UrlTextarea.ClearAsync();
+            await UrlTextarea.FillAsync(string.Join("\n", urls));
+            await SubmitButton.ClickAsync();
 
-        // A credit-cost confirmation modal appears before the form is submitted.
-        var confirmButton = Page.GetByRole(AriaRole.Button, new() { Name = "Confirm & Process" });
-        await confirmButton.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-        await confirmButton.ClickAsync();
+            // A credit-cost confirmation modal appears before the form is submitted.
+            var confirmButton = Page.GetByRole(AriaRole.Button, new() { Name = "Confirm & Process" });
+            await confirmButton.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            await confirmButton.ClickAsync();
 
-        await Page.WaitForURLAsync("**/ui/batches/**");
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        return new BatchDetailPage(Page);
-    }
+            await Page.WaitForURLAsync("**/ui/batches/**");
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+            return new BatchDetailPage(Page);
+        });
 
-    public async Task<IReadOnlyList<ILocator>> GetBatchRowsAsync() =>
-        await BatchListItems.AllAsync();
+    public Task<IReadOnlyList<ILocator>> GetBatchRowsAsync() =>
+        AllureApi.Step("Get batch list rows",
+            () => BatchListItems.AllAsync());
 }

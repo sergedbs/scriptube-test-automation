@@ -7,6 +7,14 @@
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <!--
+          NUnit1032: "IDisposable field should be disposed in TearDown"
+          Suppressed because API clients are created via BaseApiTest.CreateClient<T>(), which
+          registers them in a managed list and disposes them (with AllureRestLogger.Detach) in
+          BaseApiTest.TearDown(). The static analyzer cannot follow the indirection through the
+          managed list, so it incorrectly reports the fields as undisposed.
+        -->
+        <NoWarn>$(NoWarn);NUnit1032</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,6 +29,12 @@
 
     <ItemGroup>
         <Using Include="NUnit.Framework" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="allureConfig.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>

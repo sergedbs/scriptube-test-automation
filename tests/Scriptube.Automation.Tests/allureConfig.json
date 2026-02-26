@@ -1,7 +1,9 @@
 {
   "allure": {
     "directory": "allure-results",
-    "links": [],
-    "title": "Scriptube Test Automation"
+    "title": "Scriptube Test Automation",
+    "links": [
+      "https://github.com/sergedbs/scriptube-test-automation/issues/{}"
+    ]
   }
 }

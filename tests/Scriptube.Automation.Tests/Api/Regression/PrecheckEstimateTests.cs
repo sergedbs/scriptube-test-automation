@@ -35,8 +35,8 @@ public sealed class PrecheckEstimateTests : BaseApiTest
     public override void SetUp()
     {
         base.SetUp();
-        _credits = new CreditsClient(Settings);
-        _transcripts = new TranscriptsClient(Settings);
+        _credits = CreateClient<CreditsClient>();
+        _transcripts = CreateClient<TranscriptsClient>();
         _batchIdsToCleanup.Clear();
     }
 
@@ -49,8 +49,6 @@ public sealed class PrecheckEstimateTests : BaseApiTest
             catch { /* best-effort cleanup */ }
         }
 
-        _credits.Dispose();
-        _transcripts.Dispose();
         await base.TearDown();
     }
 

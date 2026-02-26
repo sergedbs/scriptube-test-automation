@@ -4,6 +4,7 @@ using Scriptube.Automation.Api.Clients;
 using Scriptube.Automation.Api.Models.Builders;
 using Scriptube.Automation.Api.TestData;
 using Scriptube.Automation.Core.Configuration;
+using Scriptube.Automation.Core.Reporting;
 using Scriptube.Automation.Ui.Navigation;
 using Scriptube.Automation.Ui.Pages;
 using Scriptube.Automation.Ui.Tests;
@@ -46,6 +47,7 @@ public sealed class BatchTests : AuthenticatedUiTest
     {
         var settings = ConfigurationProvider.Get();
         _transcripts = new TranscriptsClient(settings);
+        AllureRestLogger.Attach(_transcripts);
 
         var request = new TranscriptRequestBuilder()
             .WithUrl(VideoIds.EnglishManualUrl)
@@ -66,6 +68,7 @@ public sealed class BatchTests : AuthenticatedUiTest
             // Best-effort: never let cleanup fail the suite.
             try { await _transcripts.DeleteAsync(_completedBatchId); } catch { /* ignored */ }
         }
+        AllureRestLogger.Detach(_transcripts);
         _transcripts.Dispose();
     }
 

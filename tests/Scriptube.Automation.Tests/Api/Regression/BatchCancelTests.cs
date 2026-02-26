@@ -42,8 +42,8 @@ public sealed class BatchCancelTests : BaseApiTest
     public override void SetUp()
     {
         base.SetUp();
-        _transcripts = new TranscriptsClient(Settings);
-        _credits = new CreditsClient(Settings);
+        _transcripts = CreateClient<TranscriptsClient>();
+        _credits = CreateClient<CreditsClient>();
         _batchIdsToCleanup.Clear();
     }
 
@@ -56,8 +56,6 @@ public sealed class BatchCancelTests : BaseApiTest
             catch { /* best-effort cleanup */ }
         }
 
-        _transcripts.Dispose();
-        _credits.Dispose();
         await base.TearDown();
     }
 
