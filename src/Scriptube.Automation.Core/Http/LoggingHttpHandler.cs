@@ -57,7 +57,13 @@ public class LoggingHttpHandler : DelegatingHandler
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, "HTTP request failed after {ElapsedMs}ms", sw.ElapsedMilliseconds);
+            Logger.Error(
+                ex,
+                "HTTP request failed after {ElapsedMs}ms — {Method} {Url}\nHeaders: {Headers}",
+                sw.ElapsedMilliseconds,
+                request.Method,
+                request.RequestUri,
+                maskedHeaders);
             throw;
         }
 
