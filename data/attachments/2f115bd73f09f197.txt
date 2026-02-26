@@ -1,0 +1,15 @@
+=== REQUEST ===
+POST https://scriptube.me/api/webhooks/register
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 118
+--- Body ---
+{"url":"https://c59e-52-161-82-114.ngrok-free.app","events":["batch.completed"],"secret":"smoke-test-secret-key-1234"}
+
+=== RESPONSE (96ms) ===
+Status: 201
+--- Body ---
+{"status":"active","webhook_id":"bdc33951-d984-409d-a51f-74b46ab4ef48","message":"Webhook registered successfully"}

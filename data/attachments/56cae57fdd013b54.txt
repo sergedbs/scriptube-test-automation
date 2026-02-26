@@ -1,0 +1,7 @@
+[04:26:02 INF] → GET https://scriptube.me/api/v1/credits/balance
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[04:26:02 INF] ← 401 GET https://scriptube.me/api/v1/credits/balance (237ms)
+Body: {"detail":"Invalid or expired API key"}

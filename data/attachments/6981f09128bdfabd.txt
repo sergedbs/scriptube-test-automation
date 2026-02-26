@@ -1,0 +1,7 @@
+[04:26:03 INF] → GET https://scriptube.me/api/v1/user
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[04:26:03 INF] ← 200 GET https://scriptube.me/api/v1/user (95ms)
+Body: {"user_id":"e78edd2e-02c4-49de-a028-56cbd6f5eeb2","email":"sergiu_sdet@gmail.com","plan":"pro","email_verified":true,"credits_balance":562,"total_videos_processed":264,"created_at":"2026-02-23T08:03:12.748245Z"}
