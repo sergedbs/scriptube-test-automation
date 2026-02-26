@@ -37,6 +37,12 @@ public sealed class DashboardPage : BasePage
         });
 
     public Task<IReadOnlyList<ILocator>> GetBatchRowsAsync() =>
-        AllureApi.Step("Get batch list rows",
-            () => BatchListItems.AllAsync());
+        AllureApi.Step("Get batch list rows", async () =>
+        {
+            // Re-wait for NetworkIdle defends against SPA re-renders that fire
+            // after the initial GotoAsync/NetworkIdle in NavigateToAsync, which
+            // would otherwise invalidate the JS execution context for AllAsync().
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+            return await BatchListItems.AllAsync();
+        });
 }

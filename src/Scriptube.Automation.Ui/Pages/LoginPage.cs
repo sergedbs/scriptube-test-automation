@@ -36,6 +36,9 @@ public sealed class LoginPage : BasePage
             await EmailInput.FillAsync(email);
             await PasswordInput.FillAsync(password);
             await SubmitButton.ClickAsync();
+            // Wait for the server response to process — ensures the error element
+            // (or redirect) is in the DOM before the caller inspects the page.
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         });
 
     /// <summary>Returns the error message text, or <see cref="string.Empty"/> if none appears within the configured action timeout.</summary>
