@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/41d761a3-71d1-4878-ac23-60539fda800b
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (43ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"41d761a3-71d1-4878-ac23-60539fda800b","batch_number":283,"status":"processing","created_at":"2026-02-26T05:36:44.194413Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstMULTI001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}

@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/ab6caef6-5464-4b11-b511-d3b28f421a9c
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (33ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"ab6caef6-5464-4b11-b511-d3b28f421a9c","batch_number":259,"status":"processing","created_at":"2026-02-26T05:34:38.709076Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstAGERS001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}

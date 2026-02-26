@@ -1,0 +1,9 @@
+[05:32:54 INF] → POST https://scriptube.me/api/v1/transcripts
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 86
+Body: {"urls":["https://vimeo.com/123456789"],"use_byok":false,"translate_to_english":false}
+[05:32:54 INF] ← 422 POST https://scriptube.me/api/v1/transcripts (24ms)
+Body: {"detail":"Invalid YouTube URL: https://vimeo.com/123456789. Only YouTube video and playlist URLs are supported."}

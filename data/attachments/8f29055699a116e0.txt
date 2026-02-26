@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/webhooks/f3e889b2-f3c0-440d-9704-9931d5c475a6
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (31ms) ===
+Status: 200
+--- Body ---
+{"webhook_id":"f3e889b2-f3c0-440d-9704-9931d5c475a6","url":"https://f908-20-168-110-21.ngrok-free.app","events":["batch.completed"],"is_active":true,"last_triggered_at":null,"failure_count":0,"created_at":"2026-02-26T05:34:26.998975+00:00"}

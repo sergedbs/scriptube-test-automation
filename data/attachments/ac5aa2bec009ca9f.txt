@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/e83f41a3-75a1-4981-9ff4-7933a90bb9a5
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (32ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"e83f41a3-75a1-4981-9ff4-7933a90bb9a5","batch_number":258,"status":"completed","created_at":"2026-02-26T05:34:33.486288Z","completed_at":"2026-02-26T05:34:34.973964Z","items":[{"video_id":"tstKOONL001","url":"https://www.youtube.com/watch?v=tstKOONL001","title":"테스트 비디오: 한국어 자막만 있음","channel":"스크립튜브 테스트","status":"completed","transcript_text":"안녕하세요 이 테스트 비디오에 오신 것을 환영합니다 이 비디오에는 한국어 자동 생성 자막만 있습니다 스크립튜브는 이 텍스트를 감지하고 영어로 번역해야 합니다 번역 비용은 천 글자당 십이 크레딧입니다 이 텍스트는 번역 경로를 테스트하기 위해 충분히 길게 작성되었습니다","transcript_language":"ko","duration_seconds":195,"error":null}]}

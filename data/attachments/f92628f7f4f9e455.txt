@@ -1,0 +1,53 @@
+[05:34:15 INF] → POST https://scriptube.me/api/webhooks/register
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 123
+Body: {"url":"https://f908-20-168-110-21.ngrok-free.app","events":["batch.completed"],"secret":"regression-test-secret-key-5678"}
+[05:34:15 INF] ← 201 POST https://scriptube.me/api/webhooks/register (184ms)
+Body: {"status":"active","webhook_id":"c18fbdbb-9ca2-4317-bb32-75d1e12010bc","message":"Webhook registered successfully"}
+[05:34:15 INF] → POST https://scriptube.me/api/v1/transcripts
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 101
+Body: {"urls":["https://www.youtube.com/watch?v=tstENMAN001"],"use_byok":true,"translate_to_english":false}
+[05:34:15 INF] ← 202 POST https://scriptube.me/api/v1/transcripts (116ms)
+Body: {"batch_id":"eda0808e-d406-46f3-8b12-ad05e96eccaa","batch_number":255,"status":"pending","url_count":1,"message":"Batch submitted for processing. Poll GET /api/v1/transcripts/{batch_id} for results.","key_source":"system"}
+[05:34:15 INF] → GET https://scriptube.me/api/v1/transcripts/eda0808e-d406-46f3-8b12-ad05e96eccaa
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[05:34:15 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/eda0808e-d406-46f3-8b12-ad05e96eccaa (36ms)
+Body: {"batch_id":"eda0808e-d406-46f3-8b12-ad05e96eccaa","batch_number":255,"status":"processing","created_at":"2026-02-26T05:34:15.668864Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstENMAN001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}
+[05:34:20 INF] → GET https://scriptube.me/api/v1/transcripts/eda0808e-d406-46f3-8b12-ad05e96eccaa
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[05:34:20 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/eda0808e-d406-46f3-8b12-ad05e96eccaa (36ms)
+Body: {"batch_id":"eda0808e-d406-46f3-8b12-ad05e96eccaa","batch_number":255,"status":"completed","created_at":"2026-02-26T05:34:15.668864Z","completed_at":"2026-02-26T05:34:17.012588Z","items":[{"video_id":"tstENMAN001","url":"https://www.youtube.com/watch?v=tstENMAN001","title":"Test Video: English Manual Captions","channel":"Scriptube Test Channel","status":"completed","transcript_text":"Welcome to this test video. This transcript was manually created and contains English text. The purpose of this video is to test the YouTube manual caption extraction path. Scriptube should detect this as a manual English transcript and process it at the lowest cost tier. This text is exactly one hundred and fifty words long to provide a realistic transcript length for testing credit calculations and export functionality. The quick brown fox jumps over the lazy dog. Testing special characters: quotes 'single' and \"double\", ampersand & symbol, less than < and greater than > signs, forward slash / and backslash \\. Numbers: 12345 and decimals 3.14159. This ensures the system handles various character types correctly during processing, storage, and export operations.","transcript_language":"en","duration_seconds":185,"error":null}]}
+[05:34:20 INF] → GET https://scriptube.me/api/webhooks/c18fbdbb-9ca2-4317-bb32-75d1e12010bc/logs?limit=50&offset=0
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[05:34:20 INF] ← 200 GET https://scriptube.me/api/webhooks/c18fbdbb-9ca2-4317-bb32-75d1e12010bc/logs?limit=50&offset=0 (46ms)
+Body: {"deliveries":[{"delivery_id":"6e34f67c-010c-49a1-864d-c618b3eba0aa","event":"batch.completed","status":"delivered","response_code":200,"attempts":1,"created_at":"2026-02-26T05:34:17.017256+00:00","next_retry_at":null}],"total":1}
+[05:34:20 INF] → DELETE https://scriptube.me/api/webhooks/c18fbdbb-9ca2-4317-bb32-75d1e12010bc
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[05:34:20 INF] ← 200 DELETE https://scriptube.me/api/webhooks/c18fbdbb-9ca2-4317-bb32-75d1e12010bc (47ms)
+Body: {"status":"deleted","webhook_id":"c18fbdbb-9ca2-4317-bb32-75d1e12010bc","message":null}
+[05:34:20 INF] → DELETE https://scriptube.me/api/v1/transcripts/eda0808e-d406-46f3-8b12-ad05e96eccaa
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[05:34:20 INF] ← 405 DELETE https://scriptube.me/api/v1/transcripts/eda0808e-d406-46f3-8b12-ad05e96eccaa (21ms)
+Body: {"detail":"Method Not Allowed"}

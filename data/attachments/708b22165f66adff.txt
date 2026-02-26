@@ -1,0 +1,13 @@
+=== REQUEST ===
+POST https://scriptube.me/api/webhooks/50b19539-a8da-4395-b43b-45b62f8db823/test
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (84ms) ===
+Status: 200
+--- Body ---
+{"status":"delivered","delivery_id":"cb101bf9-5924-41a7-a594-d5dc9bfec1a6","response_code":200,"message":"Test event sent"}

@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/f6f236e4-a472-4c60-9c65-07dace0f25ea
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (36ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"f6f236e4-a472-4c60-9c65-07dace0f25ea","batch_number":262,"status":"processing","created_at":"2026-02-26T05:34:54.314392Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstPRIVT001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}

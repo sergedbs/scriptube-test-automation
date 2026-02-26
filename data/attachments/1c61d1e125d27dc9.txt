@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/467dca02-8b4e-4fc2-aece-46fa1618ec9d
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (35ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"467dca02-8b4e-4fc2-aece-46fa1618ec9d","batch_number":263,"status":"failed","created_at":"2026-02-26T05:34:59.500232Z","completed_at":"2026-02-26T05:35:01.481486Z","items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstRLIMT001","title":null,"channel":null,"status":"failed","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":"Could not fetch transcript from YouTube."}]}

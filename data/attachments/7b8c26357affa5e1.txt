@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/fc85caae-1212-48a6-894f-6647d43d3b07
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (36ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"fc85caae-1212-48a6-894f-6647d43d3b07","batch_number":277,"status":"processing","created_at":"2026-02-26T05:36:12.950135Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstCACHE001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}

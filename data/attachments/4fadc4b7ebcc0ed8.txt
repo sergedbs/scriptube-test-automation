@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/credits/balance
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (93ms) ===
+Status: 200
+--- Body ---
+{"credits_balance":200,"plan":"pro","daily_used":218,"daily_limit":600}

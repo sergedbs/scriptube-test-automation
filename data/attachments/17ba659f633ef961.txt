@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/fc85caae-1212-48a6-894f-6647d43d3b07
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (34ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"fc85caae-1212-48a6-894f-6647d43d3b07","batch_number":277,"status":"completed","created_at":"2026-02-26T05:36:12.950135Z","completed_at":"2026-02-26T05:36:14.447714Z","items":[{"video_id":"tstCACHE001","url":"https://www.youtube.com/watch?v=tstCACHE001","title":"Test Video: Cached YouTube Transcript","channel":"Scriptube Test Channel","status":"completed","transcript_text":"This is a pre-cached transcript from a previous processing run. When this video ID is requested, the system should find it already in the database and return the cached version. The cache hit path charges a reduced credit cost compared to fresh fetching. This tests the cache-first logic in the worker.","transcript_language":"en","duration_seconds":200,"error":null}]}
