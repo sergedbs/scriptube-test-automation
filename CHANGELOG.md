@@ -7,7 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.6.1] - 2026-02-26
+## [0.7.0] - 2026-02-26
+
+### Added
+
+#### UI Layer — Page Object Models (`Scriptube.Automation.Ui`)
+
+- `PlaywrightFactory` — creates a headless Chromium `IBrowser` instance from `TestSettings.Browser` (headless mode, slow-motion, channel all configurable)
+- `BrowserContextFactory` — creates an isolated `IBrowserContext` per test with viewport dimensions from `TestSettings`, locale, and optional `storageState` restore path for authenticated contexts
+- `AuthStateManager` — `EnsureStoredAsync(page, settings)` performs a real login and persists the resulting context cookies/storage to `playwright-screenshots/storageState.json`; subsequent authenticated tests load the saved state and skip re-login
+- `AuthenticatedUiTest : BaseUiTest` — base class for tests that require an active session; overrides `StorageStatePath` and calls `AuthStateManager.EnsureStoredAsync` in `[SetUp]` if the state file is missing or stale
+- `BasePage` — holds `IPage`, exposes `NavigateToAsync(url)` and `WaitForLoadAsync()` (waits for `NetworkIdle`); used as the root for all page objects
+- `LoginPage` — locators: `EmailInput` (`[aria-label="Email"]`), `PasswordInput`, `SubmitButton` (`"Sign in"`), `ErrorMessage` (`.alert-error`); actions: `LoginAsync(email, password)` (fills form, submits, awaits `NetworkIdle`), `GetErrorMessageAsync()` (waits up to 3 s for `.alert-error` to become visible, returns inner text or empty string)
+- `SignupPage` — locators: `#email`, `#password`, submit button, `.alert-error`; action: `SignupAsync(email, password)`
+- `DashboardPage` — locators: `UrlTextarea` (`#urls`), `SubmitButton` (`"Get Transcripts"`), `BatchListItems` (`tr[data-batch-id]`); action: `SubmitBatchAsync(urls[])` (fills textarea, clicks submit, awaits `NetworkIdle`)
+- `BatchDetailPage` — locators: `StatusBadge`, `ItemRows`, export links, `TranscriptPreview` (`.transcript-preview`); actions: `WaitUntilCompleteAsync()` (polls by re-navigating to the page URL every 2 s until badge shows `completed`, `failed`, or `cancelled`; catches `PlaywrightException` on transient navigation errors), `DownloadExportAsync(format)` (resolves `json`→`jsonl` alias, clicks export link, returns `IDownload`)
+- `CreditsPage` — locators: balance display, credit pack cards; action: `GetDisplayedBalanceAsync()` returns the numeric balance shown on the page
+- `PricingPage` — locator: `PlanCards` (`.card:has(h2)` filtered by `/month`); action: `GetAllPlanNamesAsync()` reads the `<h2>` heading from each plan card
+- `NavigationHeader` — shared component locating `CreditsLink`, `PricingLink`, `SignOutButton` for use across authenticated page objects
+- Screenshot-on-failure hook in `BaseUiTest.[TearDown]` — saves a full-page PNG to `playwright-screenshots/` and attaches it to the Allure report when a test fails
+
+#### UI Test Suite (`Scriptube.Automation.Tests`)
+
+- `UiSmokeTests` (`[Category("Smoke")]`, `[Category("UI")]`) — 2 tests exercising unauthenticated public pages:
+  - `CreditsPage_DisplaysNumericBalance` — navigates to `/ui/credits`, asserts the displayed balance is a non-negative integer
+  - `PricingPage_ShowsAtLeastTwoPlans` — navigates to `/ui/pricing`, asserts at least 2 plan cards are rendered
+- `AuthTests` (`[Category("Regression")]`, `[Category("UI")]`) — 3 active tests + 2 ignored:
+  - `Login_ValidCredentials_RedirectsToDashboard` — fills valid credentials, asserts URL contains `/ui/dashboard`
+  - `Login_WrongPassword_ShowsError` — submits wrong password, asserts URL stays on `/ui/login` AND `.alert-error` contains non-empty text
+  - `Login_BlankEmail_ShowsValidation` — submits blank email, asserts URL stays on `/ui/login` (HTML5 browser validation blocks submission)
+  - `Signup_NewEmail_CreatesAccount` — `[Ignore]`d; requires a unique never-used email per run
+  - `Signup_DuplicateEmail_ShowsError` — `[Ignore]`d; app redirects to `/ui/login` for all signup attempts with no reliable DOM error signal to assert against
+- `BatchTests` (`[Category("Regression")]`, `[Category("UI")]`) — 4 active tests + 1 ignored (all extend `AuthenticatedUiTest`):
+  - `SubmitBatch_SingleUrl_BatchRowAppearsInList` — submits `tstENMAN001`, asserts at least one batch row appears in the dashboard list
+  - `BatchDetail_WaitsForComplete_ShowsCompletedStatus` — navigates to the newest batch, polls until status is `completed`
+  - `BatchDetail_ShowsTranscriptPreview` — asserts `.transcript-preview` contains non-empty text after completion
+  - `Export_Json_TriggersDownload` and `Export_Txt_TriggersDownload` — click respective export links, assert download file name is non-empty
+  - `Export_Srt_IsIgnored` — `[Ignore]`d; SRT is not a supported export format on the live API
+
+### Fixed
+
+- `LoginPage.GetErrorMessageAsync` — replaced bare `IsVisibleAsync()` check (fire-and-forget, returned `""` immediately in full-suite runs) with `WaitForAsync(Visible, Timeout: 3000)` + `catch (PlaywrightException)` so the method waits up to 3 s for the server-rendered element before giving up
+- `BatchDetailPage.WaitUntilCompleteAsync` — replaced `Page.ReloadAsync()` (caused `ERR_ABORTED` in headless Chromium) with `Page.GotoAsync(Page.Url, WaitUntil: NetworkIdle)` wrapped in a `try/catch (PlaywrightException)` to survive transient navigation errors during polling
+- `PricingPage.PlanCards` locator — changed from `[class*='plan']` (matched a single badge element) to `.card:has(h2)` filtered by `/month` text, which correctly selects the five plan cards
+
 
 ### Added
 
