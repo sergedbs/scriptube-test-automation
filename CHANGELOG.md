@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-02-26
+
+### Added
+
+#### CI/CD Pipeline (`.github/workflows/test.yml`)
+
+- **4-job GitHub Actions pipeline**: `quality` → `smoke` → `regression` → `publish-report`; each job is gated on the previous one; `publish-report` runs with `if: always()` so the report is deployed regardless of test outcome
+- **`quality` job** — runs on every trigger (push, pull_request, workflow_dispatch); performs `dotnet restore` → `dotnet format --verify-no-changes` (fails if any file diverges from `.editorconfig` rules) → `dotnet build --configuration Release --warnaserror` (fails on any compiler warning)
+- **`smoke` job** (`needs: quality`) — builds in Release, installs Playwright browsers via the generated `playwright.ps1 install --with-deps chromium`, starts an ngrok tunnel on port `5099` (so `NgrokTunnelClient` can discover the public URL at `localhost:4040` and `HasLocalReceiver` remains `true`), computes an NUnit filter from the `area` input, runs `dotnet test` with `NUnit.NumberOfTestWorkers` wired to the `threads` input
+- **`regression` job** (`needs: smoke`) — identical setup to `smoke`; skipped on plain `push` to `main`; always runs on `pull_request`; runs on `workflow_dispatch` when `suite` ≠ `smoke`
+- **`publish-report` job** (`needs: [smoke, regression]`, `if: always()`, `permissions: contents: write`) — downloads `allure-results-smoke` and `allure-results-regression` artifacts, restores Allure history from the `gh-pages` branch to enable trend charts, installs Allure CLI `2.32.0`, generates the HTML report with `allure generate`, deploys to `gh-pages` via `peaceiris/actions-gh-pages@v4` using `GITHUB_TOKEN`
+- **`workflow_dispatch` inputs**: `area` (choice: `all` / `api` / `ui` / `webhook`, default `all`), `suite` (choice: `smoke` / `regression` / `all`, default `smoke`), `threads` (string, default `1`)
+- **Trigger matrix**: `push` to `main` → smoke only; `pull_request` targeting `main` → smoke + regression; `workflow_dispatch` → honours `area` + `suite` inputs
+- **NuGet caching** — `actions/cache@v4` keyed on `hashFiles('**/*.csproj')` in every job to avoid redundant package downloads
+- **Secrets mapped to env vars** in `smoke` and `regression` jobs: `SCRIPTUBE_API_KEY`, `SCRIPTUBE_EMAIL`, `SCRIPTUBE_PASSWORD` (from GitHub Secrets); `BROWSER_HEADLESS=true`, `TEST_ENV=prod` hardcoded; `NGROK_AUTHTOKEN` consumed by `ngrok/setup-ngrok@v2`
+- **Screenshot artifact upload** — `allure-results/screenshots/` uploaded as `screenshots-smoke` / `screenshots-regression` with `if: failure()` in both test jobs; 7-day retention
+- **Allure results artifact upload** — `allure-results/` uploaded from both test jobs with `if: always()`; 30-day retention
+- `NGROK_AUTHTOKEN` documented in `.env.example` (commented out, with descriptive note)
+
+### Changed
+
+- `TODO.md` — iteration 10 items marked ✅; `WEBHOOK_RECEIVER_URL` secret note updated to reflect that CI uses ngrok directly (no external receiver URL needed)
+
 ## [0.8.0] - 2026-02-26
 
 ### Added

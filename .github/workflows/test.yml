@@ -1,0 +1,314 @@
+name: Test Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      area:
+        description: 'Test area to run'
+        required: false
+        default: 'all'
+        type: choice
+        options: [all, api, ui, webhook]
+      suite:
+        description: 'Test suite to run'
+        required: false
+        default: 'smoke'
+        type: choice
+        options: [smoke, regression, all]
+      threads:
+        description: 'Parallel NUnit workers'
+        required: false
+        default: '1'
+        type: string
+
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+  ALLURE_VERSION: '2.32.0'
+
+jobs:
+
+  # ─────────────────────────────────────────────
+  # Job 1 — Format & build gate (always runs)
+  # ─────────────────────────────────────────────
+  quality:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Check formatting
+        run: dotnet format --verify-no-changes
+
+      - name: Build (warnings as errors)
+        run: dotnet build --configuration Release --no-restore --warnaserror
+
+  # ─────────────────────────────────────────────
+  # Job 2 — Smoke tests (every trigger)
+  # ─────────────────────────────────────────────
+  smoke:
+    name: Smoke Tests
+    needs: quality
+    runs-on: ubuntu-latest
+    env:
+      SCRIPTUBE_API_KEY: ${{ secrets.SCRIPTUBE_API_KEY }}
+      SCRIPTUBE_EMAIL: ${{ secrets.SCRIPTUBE_EMAIL }}
+      SCRIPTUBE_PASSWORD: ${{ secrets.SCRIPTUBE_PASSWORD }}
+      BROWSER_HEADLESS: 'true'
+      TEST_ENV: prod
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Install Playwright browsers
+        run: pwsh tests/Scriptube.Automation.Tests/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
+
+      - name: Setup ngrok
+        uses: ngrok/setup-ngrok@v2
+        with:
+          authtoken: ${{ secrets.NGROK_AUTHTOKEN }}
+
+      - name: Start ngrok tunnel
+        run: ngrok http 5099 --log stdout > /tmp/ngrok.log &
+
+      - name: Wait for ngrok to bind
+        run: sleep 5
+
+      - name: Compute test filter
+        id: filter
+        run: |
+          AREA="${{ inputs.area || 'all' }}"
+          case "$AREA" in
+            api)     AREA_CAT="API"     ;;
+            ui)      AREA_CAT="UI"      ;;
+            webhook) AREA_CAT="Webhook" ;;
+            *)       AREA_CAT=""        ;;
+          esac
+          FILTER="TestCategory=Smoke"
+          if [ -n "$AREA_CAT" ]; then
+            FILTER="${FILTER}&TestCategory=${AREA_CAT}"
+          fi
+          echo "filter=$FILTER" >> "$GITHUB_OUTPUT"
+          echo "Active filter: $FILTER"
+
+      - name: Run smoke tests
+        run: |
+          dotnet test tests/Scriptube.Automation.Tests \
+            --configuration Release \
+            --no-build \
+            --filter "${{ steps.filter.outputs.filter }}" \
+            --logger "trx;LogFileName=smoke-results.trx" \
+            --results-directory trx-results \
+            -- NUnit.NumberOfTestWorkers=${{ inputs.threads || '1' }}
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-smoke
+          path: allure-results/
+          retention-days: 30
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-smoke
+          path: allure-results/screenshots/
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  # Job 3 — Regression tests
+  #   • pull_request to main  → always
+  #   • workflow_dispatch     → when suite != 'smoke'
+  #   • push to main          → skipped
+  # ─────────────────────────────────────────────
+  regression:
+    name: Regression Tests
+    needs: smoke
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_dispatch' && inputs.suite != 'smoke')
+    runs-on: ubuntu-latest
+    env:
+      SCRIPTUBE_API_KEY: ${{ secrets.SCRIPTUBE_API_KEY }}
+      SCRIPTUBE_EMAIL: ${{ secrets.SCRIPTUBE_EMAIL }}
+      SCRIPTUBE_PASSWORD: ${{ secrets.SCRIPTUBE_PASSWORD }}
+      BROWSER_HEADLESS: 'true'
+      TEST_ENV: prod
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Install Playwright browsers
+        run: pwsh tests/Scriptube.Automation.Tests/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
+
+      - name: Setup ngrok
+        uses: ngrok/setup-ngrok@v2
+        with:
+          authtoken: ${{ secrets.NGROK_AUTHTOKEN }}
+
+      - name: Start ngrok tunnel
+        run: ngrok http 5099 --log stdout > /tmp/ngrok.log &
+
+      - name: Wait for ngrok to bind
+        run: sleep 5
+
+      - name: Compute test filter
+        id: filter
+        run: |
+          AREA="${{ inputs.area || 'all' }}"
+          case "$AREA" in
+            api)     AREA_CAT="API"     ;;
+            ui)      AREA_CAT="UI"      ;;
+            webhook) AREA_CAT="Webhook" ;;
+            *)       AREA_CAT=""        ;;
+          esac
+          FILTER="TestCategory=Regression"
+          if [ -n "$AREA_CAT" ]; then
+            FILTER="${FILTER}&TestCategory=${AREA_CAT}"
+          fi
+          echo "filter=$FILTER" >> "$GITHUB_OUTPUT"
+          echo "Active filter: $FILTER"
+
+      - name: Run regression tests
+        run: |
+          dotnet test tests/Scriptube.Automation.Tests \
+            --configuration Release \
+            --no-build \
+            --filter "${{ steps.filter.outputs.filter }}" \
+            --logger "trx;LogFileName=regression-results.trx" \
+            --results-directory trx-results \
+            -- NUnit.NumberOfTestWorkers=${{ inputs.threads || '1' }}
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-regression
+          path: allure-results/
+          retention-days: 30
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-regression
+          path: allure-results/screenshots/
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  # Job 4 — Generate + publish Allure report
+  #   Runs after smoke/regression, even on failure.
+  #   Merges results from both jobs and preserves
+  #   history from the gh-pages branch.
+  # ─────────────────────────────────────────────
+  publish-report:
+    name: Publish Allure Report
+    needs: [smoke, regression]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download smoke Allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-smoke
+          path: allure-results
+        continue-on-error: true
+
+      - name: Download regression Allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-regression
+          path: allure-results
+        continue-on-error: true
+
+      - name: Fetch Allure history from gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+        continue-on-error: true
+
+      - name: Restore Allure history
+        run: |
+          mkdir -p allure-results/history
+          cp -r gh-pages/history/. allure-results/history/ 2>/dev/null || true
+
+      - name: Install Allure CLI
+        run: |
+          curl -sLo allure.tgz \
+            "https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz"
+          sudo tar -xzf allure.tgz -C /opt/
+          sudo ln -sf /opt/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/allure
+
+      - name: Generate Allure report
+        run: allure generate allure-results -o allure-report --clean
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+          publish_branch: gh-pages
+          keep_files: false
