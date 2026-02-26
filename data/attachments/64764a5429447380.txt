@@ -1,0 +1,9 @@
+[04:32:54 INF] → POST https://scriptube.me/api/webhooks/register
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 95
+Body: {"url":"http://localhost/x","events":["batch.completed"],"secret":"smoke-test-secret-key-1234"}
+[04:32:54 INF] ← 400 POST https://scriptube.me/api/webhooks/register (173ms)
+Body: {"detail":"Invalid webhook URL: Blocked hostname: localhost"}
