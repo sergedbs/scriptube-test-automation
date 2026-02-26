@@ -77,6 +77,8 @@ jobs:
       SCRIPTUBE_PASSWORD: ${{ secrets.SCRIPTUBE_PASSWORD }}
       BROWSER_HEADLESS: 'true'
       TEST_ENV: prod
+      ALLURE_RESULTS_DIRECTORY: ${{ github.workspace }}/allure-results
+      Timeouts__PlaywrightActionMs: '30000'
 
     steps:
       - uses: actions/checkout@v4
@@ -177,6 +179,8 @@ jobs:
       SCRIPTUBE_PASSWORD: ${{ secrets.SCRIPTUBE_PASSWORD }}
       BROWSER_HEADLESS: 'true'
       TEST_ENV: prod
+      ALLURE_RESULTS_DIRECTORY: ${{ github.workspace }}/allure-results
+      Timeouts__PlaywrightActionMs: '30000'
 
     steps:
       - uses: actions/checkout@v4
