@@ -27,7 +27,9 @@ public class ApiClientBase : IDisposable
 
     public ApiClientBase(TestSettings settings, bool requiresAuth = true)
     {
-        var retryPolicy = HttpPolicyFactory.BuildPolicy(settings.Retry);
+        var retryPolicy = HttpPolicyFactory.BuildPolicy(
+            retrySettings: settings.Retry,
+            requestTimeoutSeconds: settings.Timeouts.RequestSeconds);
 
         // Handler chain (outer → inner):
         //   LoggingHttpHandler  — logs the logical request/final response once, fires OnExchange
@@ -47,7 +49,8 @@ public class ApiClientBase : IDisposable
         // timeouts are enforced by NUnit's [Timeout] attribute or the Polly timeout strategy.
         var httpClient = new HttpClient(_loggingHandler)
         {
-            Timeout = Timeout.InfiniteTimeSpan
+            // Enforce a hard per-request timeout to prevent hung sockets from stalling the run.
+            Timeout = TimeSpan.FromSeconds(settings.Timeouts.RequestSeconds)
         };
 
         var options = new RestClientOptions(settings.BaseUrl);

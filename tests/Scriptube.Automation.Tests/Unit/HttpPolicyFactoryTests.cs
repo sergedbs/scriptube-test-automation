@@ -17,9 +17,12 @@ public sealed class HttpPolicyFactoryTests
     // ── helpers ────────────────────────────────────────────────────────────
 
     /// <summary>Builds an HttpClient that routes traffic through <see cref="RetryDelegatingHandler"/>.</summary>
-    private static HttpClient BuildClient(RetrySettings settings, StubHttpHandler stub)
+    private static HttpClient BuildClient(
+        RetrySettings retrySettings,
+        StubHttpHandler stub,
+        int requestTimeoutSeconds = 30)
     {
-        var policy = HttpPolicyFactory.BuildPolicy(settings);
+        var policy = HttpPolicyFactory.BuildPolicy(retrySettings, requestTimeoutSeconds);
         var retryHandler = new RetryDelegatingHandler(policy) { InnerHandler = stub };
         return new HttpClient(retryHandler);
     }
@@ -108,6 +111,24 @@ public sealed class HttpPolicyFactoryTests
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         stub.CallCount.Should().Be(2, because: "first attempt threw, second succeeded");
+    }
+
+    [Test]
+    public async Task TimeoutRejectedException_IsRetried()
+    {
+        // Arrange — first attempt times out, second succeeds
+        var stub = new StubHttpHandler();
+        stub.EnqueueException(new Polly.Timeout.TimeoutRejectedException());
+        stub.Enqueue(new HttpResponseMessage(HttpStatusCode.OK));
+
+        var client = BuildClient(FastRetry(count: 2), stub, requestTimeoutSeconds: 1);
+
+        // Act
+        var response = await client.GetAsync("http://test");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        stub.CallCount.Should().Be(2, because: "timeout on first attempt should be retried once");
     }
 
     // ── stub helper ────────────────────────────────────────────────────────
