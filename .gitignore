@@ -491,6 +491,8 @@ riderModule.iml
 # Test automation specific
 allure-results/
 allure-report/
+allure-report-local/
+trx-results/
 playwright-screenshots/
 playwright/.cache/
 appsettings.local.json

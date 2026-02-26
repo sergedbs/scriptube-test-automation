@@ -12,6 +12,7 @@ namespace Scriptube.Automation.Tests.Webhooks.Smoke;
 /// Covers registration, available-events discovery, and SSRF protection.
 /// </summary>
 [TestFixture]
+[NonParallelizable] // Shares the static WebhookReceiverManager / ReceivedRequestStore singleton.
 [Category("Smoke")]
 [Category("Webhook")]
 [AllureSuite("Smoke")]
