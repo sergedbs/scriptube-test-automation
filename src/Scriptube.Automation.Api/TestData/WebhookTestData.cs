@@ -5,7 +5,7 @@ namespace Scriptube.Automation.Api.TestData;
 /// </summary>
 public static class WebhookTestData
 {
-    // ── Signing secrets ───────────────────────────────────────────────────────
+    // Signing secrets
 
     /// <summary>Signing secret used in webhook smoke tests (min 16 chars).</summary>
     public const string SmokeSecret = "smoke-test-secret-key-1234";
@@ -16,7 +16,7 @@ public static class WebhookTestData
     /// <summary>Signing secret used exclusively for the HMAC verification test.</summary>
     public const string HmacVerificationSecret = "hmac-verification-secret-abc-xyz";
 
-    // ── Event names ───────────────────────────────────────────────────────────
+    // Event names
 
     /// <summary>Event fired when a transcript batch finishes processing.</summary>
     public const string EventBatchCompleted = "batch.completed";
@@ -27,7 +27,7 @@ public static class WebhookTestData
     /// <summary>Event fired when the credit balance falls below the threshold.</summary>
     public const string EventCreditsLow = "credits.low";
 
-    // ── SSRF probe URLs ───────────────────────────────────────────────────────
+    // SSRF probe URLs
 
     /// <summary>Localhost probe — must be rejected by the API (SSRF protection).</summary>
     public const string SsrfLocalhost = "http://localhost/x";

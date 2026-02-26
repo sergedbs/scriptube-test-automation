@@ -8,7 +8,7 @@ public sealed class LoginPage : BasePage
     private ILocator EmailInput => Page.GetByLabel("Email");
     private ILocator PasswordInput => Page.GetByLabel("Password");
     private ILocator SubmitButton => Page.GetByRole(AriaRole.Button, new() { Name = "Sign in" });
-    private ILocator ErrorMessage => Page.GetByRole(AriaRole.Alert);
+    private ILocator ErrorMessage => Page.Locator(".alert-error");
 
     public LoginPage(IPage page) : base(page) { }
 
@@ -27,10 +27,10 @@ public sealed class LoginPage : BasePage
     {
         try
         {
-            await ErrorMessage.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            await ErrorMessage.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 3000 });
             return await ErrorMessage.InnerTextAsync();
         }
-        catch (TimeoutException)
+        catch (PlaywrightException)
         {
             return string.Empty;
         }

@@ -3,23 +3,20 @@ using Scriptube.Automation.Ui.Components;
 
 namespace Scriptube.Automation.Ui.Pages;
 
-/// <summary>Page Object Model for <c>/ui/transcripts/{batchId}</c>.</summary>
+/// <summary>Page Object Model for <c>/ui/batches/{batchId}</c>.</summary>
 public sealed class BatchDetailPage : BasePage
 {
-    private ILocator StatusBadge =>
-        Page.GetByTestId("batch-status")
-            .Or(Page.Locator("[class*='status']").First);
+    // Status badge: class="badge badge-{status}" (e.g. badge-completed, badge-processing)
+    private ILocator StatusBadge => Page.Locator("span.badge").First;
 
-    private ILocator ItemRows =>
-        Page.GetByRole(AriaRole.Row)
-            .Or(Page.Locator("[data-testid='transcript-item']"));
+    // "Total items" stat from the meta-grid
+    private ILocator TotalItemsValue =>
+        Page.Locator(".meta-item")
+            .Filter(new() { HasText = "Total items" })
+            .Locator(".meta-value");
 
-    private ILocator ExportButton =>
-        Page.GetByRole(AriaRole.Button, new() { Name = "Export" });
-
-    private ILocator TranscriptPreview =>
-        Page.GetByTestId("transcript-preview")
-            .Or(Page.Locator("[class*='transcript']").First);
+    // Transcript text shown inline below each item
+    private ILocator TranscriptPreviews => Page.Locator(".transcript-preview");
 
     public NavigationHeader Nav => new(Page);
 
@@ -29,10 +26,10 @@ public sealed class BatchDetailPage : BasePage
         (await StatusBadge.InnerTextAsync()).Trim().ToLowerInvariant();
 
     public async Task<int> GetItemCountAsync() =>
-        await ItemRows.CountAsync();
+        int.Parse((await TotalItemsValue.InnerTextAsync()).Trim());
 
     public async Task<string> GetTranscriptPreviewTextAsync() =>
-        await TranscriptPreview.InnerTextAsync();
+        (await TranscriptPreviews.First.InnerTextAsync()).Trim();
 
     /// <summary>
     /// Polls the page until the batch status is <c>completed</c> or <c>failed</c>,
@@ -52,8 +49,15 @@ public sealed class BatchDetailPage : BasePage
             }
 
             await Task.Delay(pollMs);
-            await Page.ReloadAsync();
-            await WaitForLoadAsync();
+            try
+            {
+                // GotoAsync is safer than ReloadAsync when the server may redirect on completion.
+                await Page.GotoAsync(Page.Url, new() { WaitUntil = WaitUntilState.NetworkIdle });
+            }
+            catch (PlaywrightException)
+            {
+                await WaitForLoadAsync();
+            }
         }
 
         var finalStatus = await GetStatusAsync();
@@ -62,18 +66,18 @@ public sealed class BatchDetailPage : BasePage
     }
 
     /// <summary>
-    /// Triggers an export and returns the resulting <see cref="IDownload"/>.
-    /// Pass <paramref name="format"/> (e.g. "JSON") when the control is a dropdown.
+    /// Clicks the export link for <paramref name="format"/> and waits for the browser download.
+    /// Accepts <c>"txt"</c>, <c>"csv"</c>, <c>"jsonl"</c>, or <c>"json"</c> (mapped to "jsonl").
     /// </summary>
     public async Task<IDownload> ExportAsync(string? format = null)
     {
-        if (format is not null)
+        var fmt = (format ?? "txt").ToLowerInvariant() switch
         {
-            await ExportButton.ClickAsync();
-            var formatOption = Page.GetByRole(AriaRole.Menuitem, new() { Name = format });
-            return await Page.RunAndWaitForDownloadAsync(() => formatOption.ClickAsync());
-        }
+            "json" => "jsonl",
+            var f => f
+        };
 
-        return await Page.RunAndWaitForDownloadAsync(() => ExportButton.ClickAsync());
+        var link = Page.GetByRole(AriaRole.Link, new() { Name = $"Export {fmt.ToUpper()}" });
+        return await Page.RunAndWaitForDownloadAsync(() => link.ClickAsync());
     }
 }

@@ -6,9 +6,11 @@ namespace Scriptube.Automation.Ui.Pages;
 /// <summary>Page Object Model for <c>/ui/pricing</c>.</summary>
 public sealed class PricingPage : BasePage
 {
+    // Plan cards have class="card", contain an h2 heading and a "/month" price line.
+    // This excludes FAQ cards and the "Compare Plans" / "How Credits Work" cards.
     private ILocator PlanCards =>
         Page.GetByTestId("plan-card")
-            .Or(Page.Locator("[class*='plan']"));
+            .Or(Page.Locator(".card:has(h2)").Filter(new() { HasText = "/month" }));
 
     public NavigationHeader Nav => new(Page);
 
@@ -22,12 +24,8 @@ public sealed class PricingPage : BasePage
 
         foreach (var card in cards)
         {
-            var heading = card.GetByRole(AriaRole.Heading);
-            var text = await heading.IsVisibleAsync()
-                ? await heading.InnerTextAsync()
-                : await card.InnerTextAsync();
-
-            var name = text.Split('\n', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim();
+            var heading = card.Locator("h2").First;
+            var name = (await heading.InnerTextAsync()).Trim();
             if (!string.IsNullOrWhiteSpace(name))
             {
                 names.Add(name);
