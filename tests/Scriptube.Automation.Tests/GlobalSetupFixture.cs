@@ -3,13 +3,12 @@ using NUnit.Framework;
 using Scriptube.Automation.Core.Configuration;
 using Serilog;
 
-namespace Scriptube.Automation.Core.Tests;
+namespace Scriptube.Automation.Tests;
 
 /// <summary>
-/// Root base class for all test fixtures.
-/// Loads configuration and sets up Serilog once per assembly run.
-/// Also writes Allure <c>environment.properties</c> so the report shows
-/// runtime details (base URL, framework, .NET version) on the Overview tab.
+/// Assembly-level setup for the test suite.
+/// Initializes Serilog and writes Allure environment.properties so reports
+/// include runtime metadata on the Overview tab.
 /// </summary>
 [SetUpFixture]
 public class GlobalSetupFixture
@@ -36,10 +35,6 @@ public class GlobalSetupFixture
         Log.CloseAndFlush();
     }
 
-    /// <summary>
-    /// Writes <c>environment.properties</c> into the Allure results directory so that
-    /// the report's Overview tab shows runtime context for every run.
-    /// </summary>
     private static void WriteAllureEnvironmentProperties(TestSettings settings)
     {
         try

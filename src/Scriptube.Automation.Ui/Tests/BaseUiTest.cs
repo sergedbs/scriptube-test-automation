@@ -55,26 +55,42 @@ public abstract class BaseUiTest : BaseTest
             await TakeScreenshotAsync();
         }
 
-        await Page.CloseAsync();
-        await Context.CloseAsync();
-        await _browser.CloseAsync();
-        _playwright.Dispose();
+        if (Page is not null)
+        {
+            try { await Page.CloseAsync(); } catch { /* ignored */ }
+        }
+
+        if (Context is not null)
+        {
+            try { await Context.CloseAsync(); } catch { /* ignored */ }
+        }
+
+        if (_browser is not null)
+        {
+            try { await _browser.CloseAsync(); } catch { /* ignored */ }
+        }
+
+        if (_playwright is not null)
+        {
+            try { _playwright.Dispose(); } catch { /* ignored */ }
+        }
     }
 
     private async Task TakeScreenshotAsync()
     {
         try
         {
-            var screenshotDir = "playwright-screenshots";
-            Directory.CreateDirectory(screenshotDir);
-
             var fileName = $"{TestContext.CurrentContext.Test.FullName}_{DateTime.UtcNow:yyyyMMdd_HHmmss}.png";
-            var filePath = Path.Combine(screenshotDir, SanitizeFileName(fileName));
+            var filePath = Path.Combine(Path.GetTempPath(), "scriptube-playwright-screens", SanitizeFileName(fileName));
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
             var bytes = await Page.ScreenshotAsync(new PageScreenshotOptions { FullPage = true });
             await File.WriteAllBytesAsync(filePath, bytes);
 
             AllureApi.AddAttachment("Screenshot on failure", "image/png", bytes, ".png");
+
+            // Avoid unbounded disk growth on long-running agents.
+            try { File.Delete(filePath); } catch { /* ignored */ }
         }
         catch
         {

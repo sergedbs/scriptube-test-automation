@@ -9,6 +9,8 @@ namespace Scriptube.Automation.Core.Reporting;
 /// </summary>
 public static class AllureRestLogger
 {
+    private const int MaxBodyChars = 15_000; // guard against huge payloads bloating allure-results
+
     /// <summary>
     /// Attach the logger to <paramref name="client"/>. Call once per client instance,
     /// typically in a test fixture's <c>SetUp</c>.
@@ -47,13 +49,28 @@ public static class AllureRestLogger
                 --- Headers ---
                 {e.RequestHeaders}
                 --- Body ---
-                {(string.IsNullOrWhiteSpace(e.RequestBody) ? "(empty)" : e.RequestBody)}
+                {FormatBody(e.RequestBody)}
 
                 === RESPONSE ({e.ElapsedMs}ms) ===
                 Status: {e.StatusCode}
                 --- Body ---
-                {(string.IsNullOrWhiteSpace(e.ResponseBody) ? "(empty)" : e.ResponseBody)}
+                {FormatBody(e.ResponseBody)}
                 """;
+    }
+
+    private static string FormatBody(string body)
+    {
+        if (string.IsNullOrWhiteSpace(body))
+        {
+            return "(empty)";
+        }
+
+        if (body.Length <= MaxBodyChars)
+        {
+            return body;
+        }
+
+        return body[..MaxBodyChars] + $"\n\n--- truncated to {MaxBodyChars:N0} chars ---";
     }
 
     private static string TruncatePath(string url)

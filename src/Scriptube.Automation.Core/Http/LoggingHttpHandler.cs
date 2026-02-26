@@ -13,6 +13,13 @@ public class LoggingHttpHandler : DelegatingHandler
 {
     private static readonly ILogger Logger = Serilog.Log.ForContext<LoggingHttpHandler>();
     private const string MaskedValue = "***MASKED***";
+    private static readonly HashSet<string> SensitiveHeaders = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "X-API-Key",
+        "Authorization",
+        "Cookie",
+        "Set-Cookie"
+    };
 
     // Consumers (e.g. AllureRestLogger) may subscribe to capture exchanges.
     public event Action<HttpExchange>? OnExchange;
@@ -84,7 +91,7 @@ public class LoggingHttpHandler : DelegatingHandler
         var sb = new StringBuilder();
         foreach (var header in headers)
         {
-            var value = string.Equals(header.Key, "X-API-Key", StringComparison.OrdinalIgnoreCase)
+            var value = SensitiveHeaders.Contains(header.Key)
                 ? MaskedValue
                 : string.Join(", ", header.Value);
             sb.AppendLine($"  {header.Key}: {value}");
