@@ -78,6 +78,7 @@ jobs:
       BROWSER_HEADLESS: 'true'
       TEST_ENV: prod
       Timeouts__PlaywrightActionMs: '30000'
+      Timeouts__AuthCooldownMs: '10000'
 
     steps:
       - uses: actions/checkout@v4
@@ -178,6 +179,7 @@ jobs:
       BROWSER_HEADLESS: 'true'
       TEST_ENV: prod
       Timeouts__PlaywrightActionMs: '30000'
+      Timeouts__AuthCooldownMs: '10000'
 
     steps:
       - uses: actions/checkout@v4
