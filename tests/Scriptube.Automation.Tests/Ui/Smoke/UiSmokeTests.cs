@@ -1,5 +1,6 @@
 using Allure.NUnit.Attributes;
 using FluentAssertions;
+using Scriptube.Automation.Ui.Navigation;
 using Scriptube.Automation.Ui.Pages;
 using Scriptube.Automation.Ui.Tests;
 
@@ -22,7 +23,7 @@ public sealed class UiSmokeTests : AuthenticatedUiTest
     public async Task CreditsPage_LoadsWithBalance()
     {
         var credits = new CreditsPage(Page);
-        await credits.NavigateToAsync($"{Settings.BaseUrl.TrimEnd('/')}/ui/credits");
+        await credits.NavigateToAsync(PageUrl(UiRoutes.Credits));
         await credits.WaitForLoadAsync();
 
         var balance = await credits.GetDisplayedBalanceAsync();
@@ -39,7 +40,7 @@ public sealed class UiSmokeTests : AuthenticatedUiTest
     public async Task PricingPage_ShowsAtLeastTwoPlans()
     {
         var pricing = new PricingPage(Page);
-        await pricing.NavigateToAsync($"{Settings.BaseUrl.TrimEnd('/')}/ui/pricing");
+        await pricing.NavigateToAsync(PageUrl(UiRoutes.Pricing));
         await pricing.WaitForLoadAsync();
 
         var plans = await pricing.GetAllPlanNamesAsync();
@@ -49,5 +50,21 @@ public sealed class UiSmokeTests : AuthenticatedUiTest
             because: "the pricing page must list at least two subscription plans");
         proPrice.Should().NotBeNullOrWhiteSpace(
             because: "the Pro plan must display a price");
+    }
+
+    [Test]
+    [AllureStep("Navigation header Credits link navigates to the credits page")]
+    public async Task NavigationHeader_CreditsLink_NavigatesToCreditsPage()
+    {
+        // Start on the dashboard so the authenticated navigation header is present.
+        var dashboard = new DashboardPage(Page);
+        await dashboard.NavigateToAsync(PageUrl(UiRoutes.Dashboard));
+        await dashboard.WaitForLoadAsync();
+
+        var credits = await dashboard.Nav.ClickCreditsAsync();
+        await credits.WaitForLoadAsync();
+
+        Page.Url.Should().Contain(UiRoutes.Credits,
+            because: "clicking the Credits nav link must navigate to the credits page");
     }
 }

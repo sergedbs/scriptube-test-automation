@@ -1,5 +1,6 @@
 using Allure.NUnit.Attributes;
 using FluentAssertions;
+using Scriptube.Automation.Ui.Navigation;
 using Scriptube.Automation.Ui.Pages;
 using Scriptube.Automation.Ui.Tests;
 
@@ -17,18 +18,26 @@ namespace Scriptube.Automation.Tests.Ui.Regression;
 [AllureTag("Regression", "UI", "Auth")]
 public sealed class AuthTests : BaseUiTest
 {
+    [TearDown]
+    public async Task CoolDownAsync()
+    {
+        // The login endpoint is nginx-rate-limited. A brief pause between tests
+        // prevents the 503 "Service Temporarily Unavailable" that fires when three
+        // login attempts land in rapid succession.
+        await Task.Delay(Settings.Timeouts.AuthCooldownMs);
+    }
     [Test]
     [AllureStep("Login with valid credentials redirects to dashboard")]
     public async Task Login_ValidCredentials_RedirectsToDashboard()
     {
         var login = new LoginPage(Page);
-        await login.NavigateToAsync($"{Settings.BaseUrl.TrimEnd('/')}/ui/login");
+        await login.NavigateToAsync(PageUrl(UiRoutes.Login));
         await login.WaitForLoadAsync();
 
         var dashboard = await login.LoginAsync(Settings.Credentials.Email, Settings.Credentials.Password);
 
         await dashboard.WaitForLoadAsync();
-        Page.Url.Should().Contain("/ui/dashboard",
+        Page.Url.Should().Contain(UiRoutes.Dashboard,
             because: "valid credentials must redirect to the dashboard");
     }
 
@@ -37,12 +46,13 @@ public sealed class AuthTests : BaseUiTest
     public async Task Login_WrongPassword_ShowsError()
     {
         var login = new LoginPage(Page);
-        await login.NavigateToAsync($"{Settings.BaseUrl.TrimEnd('/')}/ui/login");
+        await login.NavigateToAsync(PageUrl(UiRoutes.Login));
         await login.WaitForLoadAsync();
 
-        await login.LoginAsync(Settings.Credentials.Email, "wrong-password-that-does-not-exist");
+        // Use SubmitFormAsync — does not assume a dashboard redirect.
+        await login.SubmitFormAsync(Settings.Credentials.Email, "wrong-password-that-does-not-exist");
 
-        Page.Url.Should().Contain("/ui/login",
+        Page.Url.Should().Contain(UiRoutes.Login,
             because: "invalid credentials must not redirect to the dashboard");
         var error = await login.GetErrorMessageAsync();
         error.Should().NotBeNullOrWhiteSpace(
@@ -54,14 +64,14 @@ public sealed class AuthTests : BaseUiTest
     public async Task Login_BlankEmail_ShowsValidation()
     {
         var login = new LoginPage(Page);
-        await login.NavigateToAsync($"{Settings.BaseUrl.TrimEnd('/')}/ui/login");
+        await login.NavigateToAsync(PageUrl(UiRoutes.Login));
         await login.WaitForLoadAsync();
 
         // Blank email triggers HTML5 browser validation, which blocks form submission.
         // The page stays on /ui/login — assert the URL did not change.
-        await login.LoginAsync(string.Empty, Settings.Credentials.Password);
+        await login.SubmitFormAsync(string.Empty, Settings.Credentials.Password);
 
-        Page.Url.Should().Contain("/ui/login",
+        Page.Url.Should().Contain(UiRoutes.Login,
             because: "submitting with a blank email must keep the user on the login page");
     }
 
@@ -71,7 +81,7 @@ public sealed class AuthTests : BaseUiTest
     public async Task Signup_DuplicateEmail_ShowsError()
     {
         var signup = new SignupPage(Page);
-        await signup.NavigateToAsync($"{Settings.BaseUrl.TrimEnd('/')}/ui/signup");
+        await signup.NavigateToAsync(PageUrl(UiRoutes.Signup));
         await signup.WaitForLoadAsync();
 
         await signup.SignupAsync(Settings.Credentials.Email, Settings.Credentials.Password);
@@ -88,12 +98,12 @@ public sealed class AuthTests : BaseUiTest
     {
         var uniqueEmail = $"test+{Guid.NewGuid():N}@example.com";
         var signup = new SignupPage(Page);
-        await signup.NavigateToAsync($"{Settings.BaseUrl.TrimEnd('/')}/ui/signup");
+        await signup.NavigateToAsync(PageUrl(UiRoutes.Signup));
         await signup.WaitForLoadAsync();
 
         await signup.SignupAsync(uniqueEmail, "Test1234!");
 
-        Page.Url.Should().NotContain("/ui/signup",
+        Page.Url.Should().NotContain(UiRoutes.Signup,
             because: "successful registration must navigate away from the signup page");
     }
 }

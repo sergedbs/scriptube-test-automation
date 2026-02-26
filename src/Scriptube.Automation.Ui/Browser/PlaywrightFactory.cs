@@ -27,7 +27,8 @@ public static class PlaywrightFactory
 
         var browser = await browserType.LaunchAsync(new BrowserTypeLaunchOptions
         {
-            Headless = true
+            Headless = settings.BrowserHeadless,
+            SlowMo = settings.BrowserSlowMo > 0 ? settings.BrowserSlowMo : null
         });
         return (playwright, browser);
     }

@@ -34,8 +34,9 @@ public sealed class BatchDetailPage : BasePage
     /// <summary>
     /// Polls the page until the batch status is <c>completed</c> or <c>failed</c>,
     /// or throws <see cref="TimeoutException"/> after <paramref name="timeoutMs"/> ms.
+    /// Callers should derive the timeout from <c>Settings.Timeouts.PollTimeoutSeconds * 1_000</c>.
     /// </summary>
-    public async Task WaitUntilCompleteAsync(int timeoutMs = 120_000)
+    public async Task WaitUntilCompleteAsync(int timeoutMs)
     {
         var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
         const int pollMs = 3_000;

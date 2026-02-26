@@ -22,14 +22,17 @@ public sealed class SignupPage : BasePage
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
-    /// <summary>Returns the error message text, or <see cref="string.Empty"/> if none is visible.</summary>
+    /// <summary>Returns the error message text, or <see cref="string.Empty"/> if none appears within the configured action timeout.</summary>
     public async Task<string> GetErrorMessageAsync()
     {
-        if (await ErrorMessage.IsVisibleAsync())
+        try
         {
+            await ErrorMessage.WaitForAsync(new() { State = WaitForSelectorState.Visible });
             return await ErrorMessage.InnerTextAsync();
         }
-
-        return string.Empty;
+        catch (PlaywrightException)
+        {
+            return string.Empty;
+        }
     }
 }

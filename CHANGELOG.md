@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-02-26
+
+### Added
+
+- `UiRoutes` static class — central route constants (`Login`, `Signup`, `Dashboard`, `Credits`, `Pricing`, `ApiKeys`, `BatchDetail(id)`) replacing hardcoded `/ui/…` strings throughout tests and helpers
+- `BaseUiTest.PageUrl(route)` — combines `Settings.BaseUrl` with a `UiRoutes` constant; eliminates repeated `$"{Settings.BaseUrl.TrimEnd('/')}/ui/..."` interpolation
+- `BaseUiTest.WaitForBatchAsync(page)` — derives poll timeout from `Settings.Timeouts.PollTimeoutSeconds`; replaces the magic `120_000` ms default that was hardcoded in `BatchDetailPage`
+- `TestSettings.BrowserHeadless` — bool flag wired to `BROWSER_HEADLESS` env var (default `true`); added to `appsettings.json`, `appsettings.prod.json`, and `.env.example`
+- `TestSettings.BrowserSlowMo` — int (ms) wired to `BROWSER_SLOW_MO` env var (default `0`); set to e.g. `500` together with `BROWSER_HEADLESS=false` to step through UI actions visually
+- `UiSmokeTests.NavigationHeader_CreditsLink_NavigatesToCreditsPage` — exercises the `NavigationHeader` component (previously declared on every page but never tested)
+
+### Changed
+
+- `BatchTests` — completed-batch tests (`TranscriptPreview`, `Export_Json`, `Export_Txt`) now reuse a single batch submitted via `TranscriptsClient` in `[OneTimeSetUp]` instead of each submitting and polling independently; reduces suite wall-clock time by ~2 poll cycles; `[OneTimeTearDown]` deletes the shared batch via API
+- `BatchDetailPage.WaitUntilCompleteAsync` — removed the `= 120_000` default; callers must supply an explicit timeout (use `WaitForBatchAsync` from `BaseUiTest`)
+
+### Fixed
+
+- `PlaywrightFactory` — `Headless` now reads from `settings.BrowserHeadless` instead of being hardcoded `true`
+- `SignupPage.GetErrorMessageAsync` — replaced bare `IsVisibleAsync()` (fire-and-forget) with `WaitForAsync(Visible)` + `catch (PlaywrightException)`, matching the pattern applied to `LoginPage`; hardcoded `Timeout = 3000` removed from both pages — both now rely on the context-level `PlaywrightActionMs` (default 10 000ms) set in `BrowserContextFactory`, fixing a `TimeoutException` in `Login_WrongPassword_ShowsError` when the full suite runs concurrently
+- `CreditsPage.GetDisplayedBalanceAsync` — return type changed from `decimal` to `int`; decimal-separator stripping removed
+- `BasePage.TakeScreenshotAsync` — removed dead public method; `BaseUiTest`'s private screenshot helper (the one that attaches to Allure) is the single implementation
+- `AuthenticatedUiTest.EnsureAuthStateAsync` — added stale-session guard: on the first authenticated test of a run, navigates to `/ui/dashboard`; if the server redirects to `/ui/login` the cached file is deleted and a fresh login is performed; a `static volatile bool _sessionValidated` flag ensures this navigation runs at most once per process, preventing a per-test round-trip overhead in full suite runs
+- `AuthStateManager` — replaced hardcoded `"/ui/login"` and `"**/ui/dashboard**"` strings with `UiRoutes` constants
+- `LoginPage.SubmitFormAsync` — new method that fills and submits the login form without assuming a redirect; `Login_WrongPassword_ShowsError` and `Login_BlankEmail_ShowsValidation` tests now use this instead of `LoginAsync`, which now explicitly awaits `WaitForURLAsync("**/ui/dashboard**")`
+- `AuthTests` — added `[TearDown]` cooldown (`Settings.Timeouts.AuthCooldownMs`, default 3 000ms) between login-form tests to avoid the nginx rate limiter returning 503 when multiple login attempts land in rapid succession; `TimeoutSettings.AuthCooldownMs` added to `TestSettings`, `appsettings.json`, and `appsettings.prod.json`
+
 ## [0.7.0] - 2026-02-26
 
 ### Added

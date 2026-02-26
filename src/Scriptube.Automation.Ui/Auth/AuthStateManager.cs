@@ -1,5 +1,6 @@
 using Microsoft.Playwright;
 using Scriptube.Automation.Core.Configuration;
+using Scriptube.Automation.Ui.Navigation;
 
 namespace Scriptube.Automation.Ui.Auth;
 
@@ -23,14 +24,14 @@ public static class AuthStateManager
     {
         Directory.CreateDirectory(Path.GetDirectoryName(StorageStatePath)!);
 
-        await page.GotoAsync($"{settings.BaseUrl.TrimEnd('/')}/ui/login");
+        await page.GotoAsync($"{settings.BaseUrl.TrimEnd('/')}{UiRoutes.Login}");
         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         await page.GetByLabel("Email").FillAsync(settings.Credentials.Email);
         await page.GetByLabel("Password").FillAsync(settings.Credentials.Password);
         await page.GetByRole(AriaRole.Button, new() { Name = "Sign in" }).ClickAsync();
 
-        await page.WaitForURLAsync("**/ui/dashboard**");
+        await page.WaitForURLAsync($"**{UiRoutes.Dashboard}**");
 
         await page.Context.StorageStateAsync(new BrowserContextStorageStateOptions
         {

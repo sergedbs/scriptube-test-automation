@@ -18,12 +18,12 @@ public sealed class CreditsPage : BasePage
 
     public CreditsPage(IPage page) : base(page) { }
 
-    /// <summary>Reads and parses the displayed credit balance, stripping currency symbols.</summary>
-    public async Task<decimal> GetDisplayedBalanceAsync()
+    /// <summary>Reads and parses the displayed credit balance as a whole number.</summary>
+    public async Task<int> GetDisplayedBalanceAsync()
     {
         var raw = (await BalanceDisplay.InnerTextAsync()).Trim();
-        var digits = new string(raw.Where(c => char.IsDigit(c) || c == '.').ToArray());
-        return decimal.Parse(digits, System.Globalization.CultureInfo.InvariantCulture);
+        var digits = new string(raw.Where(char.IsDigit).ToArray());
+        return int.Parse(digits, System.Globalization.CultureInfo.InvariantCulture);
     }
 
     public async Task<int> GetCreditPackCountAsync() =>

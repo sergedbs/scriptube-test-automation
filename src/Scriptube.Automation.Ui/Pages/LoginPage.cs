@@ -12,22 +12,35 @@ public sealed class LoginPage : BasePage
 
     public LoginPage(IPage page) : base(page) { }
 
-    /// <summary>Fills and submits the login form. Returns a <see cref="DashboardPage"/> after navigation.</summary>
+    /// <summary>
+    /// Fills and submits the login form, then waits for the dashboard URL.
+    /// Use this on the happy path only — it asserts an implicit redirect to <c>/ui/dashboard</c>.
+    /// </summary>
     public async Task<DashboardPage> LoginAsync(string email, string password)
+    {
+        await SubmitFormAsync(email, password);
+        await Page.WaitForURLAsync("**/ui/dashboard**");
+        return new DashboardPage(Page);
+    }
+
+    /// <summary>
+    /// Fills and submits the login form without waiting for any navigation.
+    /// The caller is responsible for waiting on the expected outcome (error element or URL change).
+    /// Use this when testing failed login scenarios (wrong password, blank fields).
+    /// </summary>
+    public async Task SubmitFormAsync(string email, string password)
     {
         await EmailInput.FillAsync(email);
         await PasswordInput.FillAsync(password);
         await SubmitButton.ClickAsync();
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        return new DashboardPage(Page);
     }
 
-    /// <summary>Returns the error message text, or <see cref="string.Empty"/> if none is visible.</summary>
+    /// <summary>Returns the error message text, or <see cref="string.Empty"/> if none appears within the configured action timeout.</summary>
     public async Task<string> GetErrorMessageAsync()
     {
         try
         {
-            await ErrorMessage.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 3000 });
+            await ErrorMessage.WaitForAsync(new() { State = WaitForSelectorState.Visible });
             return await ErrorMessage.InnerTextAsync();
         }
         catch (PlaywrightException)

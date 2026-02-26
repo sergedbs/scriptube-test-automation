@@ -4,6 +4,8 @@ using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using Scriptube.Automation.Core.Tests;
 using Scriptube.Automation.Ui.Browser;
+using Scriptube.Automation.Ui.Navigation;
+using Scriptube.Automation.Ui.Pages;
 
 namespace Scriptube.Automation.Ui.Tests;
 
@@ -22,6 +24,20 @@ public abstract class BaseUiTest : BaseTest
     /// Override to supply a storage-state path and restore saved auth state, skipping re-login.
     /// </summary>
     protected virtual string? StorageStatePath => null;
+
+    /// <summary>
+    /// Builds a full page URL by appending a relative <paramref name="route"/> to <see cref="BaseTest.Settings"/>.<c>BaseUrl</c>.
+    /// Use with constants from <see cref="UiRoutes"/>.
+    /// </summary>
+    protected string PageUrl(string route) =>
+        $"{Settings.BaseUrl.TrimEnd('/')}{route}";
+
+    /// <summary>
+    /// Waits for <paramref name="page"/> to reach a terminal batch status, using the
+    /// poll timeout from <see cref="BaseTest.Settings"/>.
+    /// </summary>
+    protected Task WaitForBatchAsync(BatchDetailPage page) =>
+        page.WaitUntilCompleteAsync(Settings.Timeouts.PollTimeoutSeconds * 1_000);
 
     [SetUp]
     public async Task SetUpBrowserAsync()
