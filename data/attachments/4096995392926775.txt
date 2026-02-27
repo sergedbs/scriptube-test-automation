@@ -1,7 +1,0 @@
-[07:17:29 INF] → GET https://scriptube.me/api/v1/transcripts/00000000-0000-0000-0000-000000000001
-Headers:   User-Agent: RestSharp/112.1.0.0
-  X-API-Key: ***MASKED***
-  Accept: application/json
-Body: 
-[07:17:29 INF] ← 404 GET https://scriptube.me/api/v1/transcripts/00000000-0000-0000-0000-000000000001 (25ms)
-Body: {"detail":"Batch not found"}

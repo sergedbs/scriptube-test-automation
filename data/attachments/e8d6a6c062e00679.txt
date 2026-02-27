@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/e3847aaa-5fa6-4498-bc90-31074901a617
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (86ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"e3847aaa-5fa6-4498-bc90-31074901a617","batch_number":332,"status":"failed","created_at":"2026-02-27T16:17:06.783023Z","completed_at":"2026-02-27T16:17:08.594601Z","items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstTIMEO001","title":null,"channel":null,"status":"failed","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":"Could not fetch transcript from YouTube."}]}

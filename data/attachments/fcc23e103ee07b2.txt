@@ -1,0 +1,30 @@
+[16:19:03 INF] → POST https://scriptube.me/api/v1/transcripts
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 101
+Body: {"urls":["https://www.youtube.com/watch?v=tstESAUT001"],"use_byok":false,"translate_to_english":true}
+[16:19:03 INF] ← 202 POST https://scriptube.me/api/v1/transcripts (256ms)
+Body: {"batch_id":"dc4977f9-13a3-452e-8fef-38e9c44889f2","batch_number":353,"status":"pending","url_count":1,"message":"Batch submitted for processing. Poll GET /api/v1/transcripts/{batch_id} for results.","key_source":"system"}
+[16:19:03 INF] → GET https://scriptube.me/api/v1/transcripts/dc4977f9-13a3-452e-8fef-38e9c44889f2
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:19:03 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/dc4977f9-13a3-452e-8fef-38e9c44889f2 (85ms)
+Body: {"batch_id":"dc4977f9-13a3-452e-8fef-38e9c44889f2","batch_number":353,"status":"processing","created_at":"2026-02-27T16:19:03.322100Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstESAUT001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}
+[16:19:08 INF] → GET https://scriptube.me/api/v1/transcripts/dc4977f9-13a3-452e-8fef-38e9c44889f2
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:19:08 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/dc4977f9-13a3-452e-8fef-38e9c44889f2 (85ms)
+Body: {"batch_id":"dc4977f9-13a3-452e-8fef-38e9c44889f2","batch_number":353,"status":"failed","created_at":"2026-02-27T16:19:03.322100Z","completed_at":null,"items":[{"video_id":"tstESAUT001","url":"https://www.youtube.com/watch?v=tstESAUT001","title":"Video de Prueba: Solo Subtítulos en Español","channel":"Canal de Prueba Scriptube","status":"failed","transcript_text":"Hola y bienvenidos a este video de prueba. Este video solo tiene subtítulos en español generados automáticamente. Scriptube debería detectar este texto y traducirlo al inglés. El costo de traducción es de doce créditos por cada mil caracteres. Este texto se ha escrito lo suficientemente largo para probar la ruta de traducción correctamente.","transcript_language":"es","duration_seconds":160,"error":"Insufficient credits: need 4, have 0"}]}
+[16:19:08 INF] → DELETE https://scriptube.me/api/v1/transcripts/dc4977f9-13a3-452e-8fef-38e9c44889f2
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:19:08 INF] ← 405 DELETE https://scriptube.me/api/v1/transcripts/dc4977f9-13a3-452e-8fef-38e9c44889f2 (71ms)
+Body: {"detail":"Method Not Allowed"}

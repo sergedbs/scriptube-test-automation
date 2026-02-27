@@ -1,0 +1,30 @@
+[16:17:23 INF] → POST https://scriptube.me/api/v1/transcripts
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 109
+Body: {"urls":["https://www.youtube.com/playlist?list=PLtstALL0001"],"use_byok":false,"translate_to_english":false}
+[16:17:23 INF] ← 202 POST https://scriptube.me/api/v1/transcripts (273ms)
+Body: {"batch_id":"dc503825-47b3-4f07-82b2-0d4110b798cb","batch_number":335,"status":"pending","url_count":5,"message":"Batch submitted for processing. Poll GET /api/v1/transcripts/{batch_id} for results.","key_source":"system"}
+[16:17:23 INF] → GET https://scriptube.me/api/v1/transcripts/dc503825-47b3-4f07-82b2-0d4110b798cb
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:17:23 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/dc503825-47b3-4f07-82b2-0d4110b798cb (110ms)
+Body: {"batch_id":"dc503825-47b3-4f07-82b2-0d4110b798cb","batch_number":335,"status":"processing","created_at":"2026-02-27T16:17:23.345739Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstNOCAP001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null},{"video_id":"","url":"https://www.youtube.com/watch?v=tstPRIVT001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null},{"video_id":"","url":"https://www.youtube.com/watch?v=tstENMAN001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null},{"video_id":"","url":"https://www.youtube.com/watch?v=tstENAUT001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null},{"video_id":"","url":"https://www.youtube.com/watch?v=tstKOONL001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}
+[16:17:28 INF] → GET https://scriptube.me/api/v1/transcripts/dc503825-47b3-4f07-82b2-0d4110b798cb
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:17:28 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/dc503825-47b3-4f07-82b2-0d4110b798cb (87ms)
+Body: {"batch_id":"dc503825-47b3-4f07-82b2-0d4110b798cb","batch_number":335,"status":"failed","created_at":"2026-02-27T16:17:23.345739Z","completed_at":"2026-02-27T16:17:26.370243Z","items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstPRIVT001","title":null,"channel":null,"status":"failed","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":"Could not fetch transcript from YouTube."},{"video_id":"","url":"https://www.youtube.com/watch?v=tstKOONL001","title":null,"channel":null,"status":"cancelled","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":"Cancelled: insufficient credits"},{"video_id":"tstENMAN001","url":"https://www.youtube.com/watch?v=tstENMAN001","title":"Test Video: English Manual Captions","channel":"Scriptube Test Channel","status":"failed","transcript_text":"Welcome to this test video. This transcript was manually created and contains English text. The purpose of this video is to test the YouTube manual caption extraction path. Scriptube should detect this as a manual English transcript and process it at the lowest cost tier. This text is exactly one hundred and fifty words long to provide a realistic transcript length for testing credit calculations and export functionality. The quick brown fox jumps over the lazy dog. Testing special characters: quotes 'single' and \"double\", ampersand & symbol, less than < and greater than > signs, forward slash / and backslash \\. Numbers: 12345 and decimals 3.14159. This ensures the system handles various character types correctly during processing, storage, and export operations.","transcript_language":"en","duration_seconds":185,"error":"Insufficient credits: need 4, have 0"},{"video_id":"","url":"https://www.youtube.com/watch?v=tstENAUT001","title":null,"channel":null,"status":"cancelled","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":"Cancelled: insufficient credits"},{"video_id":"tstNOCAP001","url":"https://www.youtube.com/watch?v=tstNOCAP001","title":"Test Video: No Captions Available","channel":"Scriptube Test Channel","status":"failed","transcript_text":"This is the ElevenLabs AI transcription of a test video that has no YouTube captions. The audio was downloaded via proxy and sent to ElevenLabs Scribe API for transcription. This path costs more credits because it involves audio download and AI processing. The total cost includes audio proxy base cost plus per minute charges plus the ElevenLabs transcription cost of ten credits per minute.","transcript_language":"en","duration_seconds":125,"error":"Insufficient credits: need 38, have 0"}]}
+[16:17:28 INF] → DELETE https://scriptube.me/api/v1/transcripts/dc503825-47b3-4f07-82b2-0d4110b798cb
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:17:28 INF] ← 405 DELETE https://scriptube.me/api/v1/transcripts/dc503825-47b3-4f07-82b2-0d4110b798cb (71ms)
+Body: {"detail":"Method Not Allowed"}

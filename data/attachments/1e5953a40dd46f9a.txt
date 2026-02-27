@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/webhooks/9909048f-4b84-43d6-bd50-62b2ff01c038/logs?limit=50&offset=0
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (78ms) ===
+Status: 200
+--- Body ---
+{"deliveries":[{"delivery_id":"0b8cf5b8-8e11-4626-91ff-081cd10452f2","event":"test","status":"delivered","response_code":200,"attempts":1,"created_at":"2026-02-27T16:16:24.252871+00:00","next_retry_at":null}],"total":1}

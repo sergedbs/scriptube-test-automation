@@ -1,0 +1,30 @@
+[16:17:06 INF] → POST https://scriptube.me/api/v1/transcripts
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 102
+Body: {"urls":["https://www.youtube.com/watch?v=tstTIMEO001"],"use_byok":false,"translate_to_english":false}
+[16:17:06 INF] ← 202 POST https://scriptube.me/api/v1/transcripts (270ms)
+Body: {"batch_id":"e3847aaa-5fa6-4498-bc90-31074901a617","batch_number":332,"status":"pending","url_count":1,"message":"Batch submitted for processing. Poll GET /api/v1/transcripts/{batch_id} for results.","key_source":"system"}
+[16:17:06 INF] → GET https://scriptube.me/api/v1/transcripts/e3847aaa-5fa6-4498-bc90-31074901a617
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:17:06 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/e3847aaa-5fa6-4498-bc90-31074901a617 (107ms)
+Body: {"batch_id":"e3847aaa-5fa6-4498-bc90-31074901a617","batch_number":332,"status":"processing","created_at":"2026-02-27T16:17:06.783023Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstTIMEO001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}
+[16:17:11 INF] → GET https://scriptube.me/api/v1/transcripts/e3847aaa-5fa6-4498-bc90-31074901a617
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:17:12 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/e3847aaa-5fa6-4498-bc90-31074901a617 (86ms)
+Body: {"batch_id":"e3847aaa-5fa6-4498-bc90-31074901a617","batch_number":332,"status":"failed","created_at":"2026-02-27T16:17:06.783023Z","completed_at":"2026-02-27T16:17:08.594601Z","items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstTIMEO001","title":null,"channel":null,"status":"failed","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":"Could not fetch transcript from YouTube."}]}
+[16:17:12 INF] → DELETE https://scriptube.me/api/v1/transcripts/e3847aaa-5fa6-4498-bc90-31074901a617
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:17:12 INF] ← 405 DELETE https://scriptube.me/api/v1/transcripts/e3847aaa-5fa6-4498-bc90-31074901a617 (71ms)
+Body: {"detail":"Method Not Allowed"}

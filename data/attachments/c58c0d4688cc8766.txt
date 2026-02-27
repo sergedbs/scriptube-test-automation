@@ -1,0 +1,6 @@
+[16:14:28 INF] → GET https://scriptube.me/api/v1/credits/balance
+Headers:   User-Agent: RestSharp/112.1.0.0
+  Accept: application/json
+Body: 
+[16:14:28 INF] ← 401 GET https://scriptube.me/api/v1/credits/balance (13ms)
+Body: {"detail":"API key required"}

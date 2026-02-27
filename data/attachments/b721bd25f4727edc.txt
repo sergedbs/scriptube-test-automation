@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/a4a82ce0-e9b0-4d39-a5f5-3157b9aa15a1
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (83ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"a4a82ce0-e9b0-4d39-a5f5-3157b9aa15a1","batch_number":338,"status":"processing","created_at":"2026-02-27T16:17:40.654754Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstENMAN001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}

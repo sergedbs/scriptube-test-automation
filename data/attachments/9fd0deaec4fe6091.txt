@@ -1,3 +1,0 @@
-[07:14:28 DBG] UI navigate → https://scriptube.me/ui/pricing
-[07:14:29 DBG] UI page load complete (NetworkIdle)
-[07:14:29 DBG] UI page load complete (NetworkIdle)

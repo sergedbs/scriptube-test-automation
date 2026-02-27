@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/webhooks/ba5bbcce-695c-4222-9862-f02c235c7925
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (85ms) ===
+Status: 404
+--- Body ---
+{"detail":"Webhook not found"}

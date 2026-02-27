@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/f4d4a7b7-b3c9-4a1f-b22d-91f254545f03
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (82ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"f4d4a7b7-b3c9-4a1f-b22d-91f254545f03","batch_number":346,"status":"failed","created_at":"2026-02-27T16:18:24.835909Z","completed_at":null,"items":[{"video_id":"tstELTRN001","url":"https://www.youtube.com/watch?v=tstELTRN001","title":"Test Video: ElevenLabs Non-English + Translation","channel":"Scriptube Test Channel","status":"failed","transcript_text":"Dies ist ein Test-Video für die ElevenLabs-Transkription, die ein nicht-englisches Ergebnis zurückgibt. Das System sollte erkennen, dass die Sprache Deutsch ist, und automatisch eine Übersetzung ins Englische durchführen. Die Übersetzungskosten werden zusätzlich zu den ElevenLabs-Kosten berechnet.","transcript_language":"de","duration_seconds":150,"error":"Insufficient credits: need 38, have 0"}]}

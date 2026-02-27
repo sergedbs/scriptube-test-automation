@@ -1,0 +1,16 @@
+[16:14:28 INF] → POST https://scriptube.me/api/webhooks/register
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 120
+Body: {"url":"https://b2fc-172-184-213-181.ngrok-free.app","events":["batch.completed"],"secret":"smoke-test-secret-key-1234"}
+[16:14:28 INF] ← 201 POST https://scriptube.me/api/webhooks/register (33ms)
+Body: {"status":"active","webhook_id":"7e023017-4687-4ab6-9ffc-7531b15d75c7","message":"Webhook registered successfully"}
+[16:14:28 INF] → DELETE https://scriptube.me/api/webhooks/7e023017-4687-4ab6-9ffc-7531b15d75c7
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:14:28 INF] ← 200 DELETE https://scriptube.me/api/webhooks/7e023017-4687-4ab6-9ffc-7531b15d75c7 (16ms)
+Body: {"status":"deleted","webhook_id":"7e023017-4687-4ab6-9ffc-7531b15d75c7","message":null}

@@ -1,0 +1,30 @@
+[16:16:39 INF] → POST https://scriptube.me/api/v1/transcripts
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 102
+Body: {"urls":["https://www.youtube.com/watch?v=tstAGERS001"],"use_byok":false,"translate_to_english":false}
+[16:16:39 INF] ← 202 POST https://scriptube.me/api/v1/transcripts (262ms)
+Body: {"batch_id":"198c42ce-75c2-4799-9d60-c35f94cdf72f","batch_number":327,"status":"pending","url_count":1,"message":"Batch submitted for processing. Poll GET /api/v1/transcripts/{batch_id} for results.","key_source":"system"}
+[16:16:39 INF] → GET https://scriptube.me/api/v1/transcripts/198c42ce-75c2-4799-9d60-c35f94cdf72f
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:16:39 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/198c42ce-75c2-4799-9d60-c35f94cdf72f (82ms)
+Body: {"batch_id":"198c42ce-75c2-4799-9d60-c35f94cdf72f","batch_number":327,"status":"processing","created_at":"2026-02-27T16:16:39.241518Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstAGERS001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}
+[16:16:44 INF] → GET https://scriptube.me/api/v1/transcripts/198c42ce-75c2-4799-9d60-c35f94cdf72f
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:16:44 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/198c42ce-75c2-4799-9d60-c35f94cdf72f (86ms)
+Body: {"batch_id":"198c42ce-75c2-4799-9d60-c35f94cdf72f","batch_number":327,"status":"failed","created_at":"2026-02-27T16:16:39.241518Z","completed_at":"2026-02-27T16:16:40.926051Z","items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstAGERS001","title":null,"channel":null,"status":"failed","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":"Cannot access this video (age-restricted or region-locked)."}]}
+[16:16:44 INF] → DELETE https://scriptube.me/api/v1/transcripts/198c42ce-75c2-4799-9d60-c35f94cdf72f
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:16:44 INF] ← 405 DELETE https://scriptube.me/api/v1/transcripts/198c42ce-75c2-4799-9d60-c35f94cdf72f (71ms)
+Body: {"detail":"Method Not Allowed"}

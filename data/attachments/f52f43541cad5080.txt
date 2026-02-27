@@ -1,7 +1,0 @@
-[07:16:23 INF] → GET https://scriptube.me/api/v1/credits/balance
-Headers:   User-Agent: RestSharp/112.1.0.0
-  X-API-Key: ***MASKED***
-  Accept: application/json
-Body: 
-[07:16:23 INF] ← 200 GET https://scriptube.me/api/v1/credits/balance (25ms)
-Body: {"credits_balance":0,"plan":"pro","daily_used":268,"daily_limit":600}

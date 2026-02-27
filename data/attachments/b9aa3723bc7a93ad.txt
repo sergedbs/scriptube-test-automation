@@ -1,0 +1,6 @@
+[16:19:54 DBG] UI navigate → https://scriptube.me/ui/dashboard
+[16:19:56 DBG] UI page load complete (NetworkIdle)
+[16:19:56 DBG] UI page load complete (NetworkIdle)
+[16:19:56 DBG] UI navigate → https://scriptube.me/ui/batches/7307638b-19d2-42d7-8281-0bcde7eeb91f
+[16:19:56 DBG] UI page load complete (NetworkIdle)
+[16:19:56 DBG] UI page load complete (NetworkIdle)

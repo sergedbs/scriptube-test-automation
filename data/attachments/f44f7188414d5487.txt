@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/93bbd16a-6282-4cf9-b917-3478a58c0061
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (84ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"93bbd16a-6282-4cf9-b917-3478a58c0061","batch_number":351,"status":"failed","created_at":"2026-02-27T16:18:52.330840Z","completed_at":null,"items":[{"video_id":"tstMULTI001","url":"https://www.youtube.com/watch?v=tstMULTI001","title":"Test Video: Multiple Language Captions","channel":"Scriptube Global Test","status":"failed","transcript_text":"This test video has manual captions available in multiple languages including English, Spanish, and Japanese. Scriptube should prefer the English manual captions since they match the requested language. The system should not charge for translation since English captions are directly available. This tests the multi-language selection logic in the transcript fetching pipeline.","transcript_language":"en","duration_seconds":210,"error":"Insufficient credits: need 4, have 0"}]}

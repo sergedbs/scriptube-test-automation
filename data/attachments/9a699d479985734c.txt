@@ -1,0 +1,30 @@
+[16:18:19 INF] → POST https://scriptube.me/api/v1/transcripts
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 102
+Body: {"urls":["https://www.youtube.com/watch?v=tstCACHE001"],"use_byok":false,"translate_to_english":false}
+[16:18:19 INF] ← 202 POST https://scriptube.me/api/v1/transcripts (259ms)
+Body: {"batch_id":"1b18f08a-35a5-4288-8db3-01414e0e4bde","batch_number":345,"status":"pending","url_count":1,"message":"Batch submitted for processing. Poll GET /api/v1/transcripts/{batch_id} for results.","key_source":"system"}
+[16:18:19 INF] → GET https://scriptube.me/api/v1/transcripts/1b18f08a-35a5-4288-8db3-01414e0e4bde
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:18:19 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/1b18f08a-35a5-4288-8db3-01414e0e4bde (97ms)
+Body: {"batch_id":"1b18f08a-35a5-4288-8db3-01414e0e4bde","batch_number":345,"status":"processing","created_at":"2026-02-27T16:18:19.322782Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstCACHE001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}
+[16:18:24 INF] → GET https://scriptube.me/api/v1/transcripts/1b18f08a-35a5-4288-8db3-01414e0e4bde
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:18:24 INF] ← 200 GET https://scriptube.me/api/v1/transcripts/1b18f08a-35a5-4288-8db3-01414e0e4bde (87ms)
+Body: {"batch_id":"1b18f08a-35a5-4288-8db3-01414e0e4bde","batch_number":345,"status":"failed","created_at":"2026-02-27T16:18:19.322782Z","completed_at":null,"items":[{"video_id":"tstCACHE001","url":"https://www.youtube.com/watch?v=tstCACHE001","title":"Test Video: Cached YouTube Transcript","channel":"Scriptube Test Channel","status":"failed","transcript_text":"This is a pre-cached transcript from a previous processing run. When this video ID is requested, the system should find it already in the database and return the cached version. The cache hit path charges a reduced credit cost compared to fresh fetching. This tests the cache-first logic in the worker.","transcript_language":"en","duration_seconds":200,"error":"Insufficient credits: need 4, have 0"}]}
+[16:18:24 INF] → DELETE https://scriptube.me/api/v1/transcripts/1b18f08a-35a5-4288-8db3-01414e0e4bde
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:18:24 INF] ← 405 DELETE https://scriptube.me/api/v1/transcripts/1b18f08a-35a5-4288-8db3-01414e0e4bde (71ms)
+Body: {"detail":"Method Not Allowed"}

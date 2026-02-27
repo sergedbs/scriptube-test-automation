@@ -1,7 +1,0 @@
-[07:14:20 INF] → GET https://scriptube.me/api/webhooks/events/available
-Headers:   User-Agent: RestSharp/112.1.0.0
-  X-API-Key: ***MASKED***
-  Accept: application/json
-Body: 
-[07:14:20 INF] ← 200 GET https://scriptube.me/api/webhooks/events/available (215ms)
-Body: {"events":["batch.completed","batch.created","batch.failed","batch.started","credits.depleted","credits.low","item.completed","item.failed","subscription.updated","transcript.ready"],"descriptions":{"batch.created":"Triggered when a new batch is submitted. Includes batch_id, url_count, estimated_credits.","batch.started":"Triggered when batch processing begins. Includes batch_id, item_count.","batch.completed":"Triggered when a batch finishes processing. Includes batch_id, status, item counts.","batch.failed":"Triggered when a batch fails entirely. Includes batch_id, error_message.","item.completed":"Triggered when a single item completes. Includes batch_id, item_id, video_id.","item.failed":"Triggered when a single item fails. Includes batch_id, item_id, error.","transcript.ready":"Triggered when a transcript is ready. Includes video_id, title, preview.","credits.low":"Triggered when credit balance drops below threshold. Includes current_balance.","credits.depleted":"Triggered when credit balance reaches zero.","subscription.updated":"Triggered when user's plan changes. Includes old_plan, new_plan."}}

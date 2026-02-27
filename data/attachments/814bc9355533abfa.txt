@@ -1,0 +1,23 @@
+[16:14:28 INF] → POST https://scriptube.me/api/webhooks/register
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 120
+Body: {"url":"https://b2fc-172-184-213-181.ngrok-free.app","events":["batch.completed"],"secret":"smoke-test-secret-key-1234"}
+[16:14:28 INF] ← 201 POST https://scriptube.me/api/webhooks/register (39ms)
+Body: {"status":"active","webhook_id":"eb1b2890-8279-4607-9ace-ce5ca27ea4a8","message":"Webhook registered successfully"}
+[16:14:28 INF] → GET https://scriptube.me/api/webhooks
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:14:28 INF] ← 200 GET https://scriptube.me/api/webhooks (13ms)
+Body: {"webhooks":[{"webhook_id":"eb1b2890-8279-4607-9ace-ce5ca27ea4a8","url":"https://b2fc-172-184-213-181.ngrok-free.app","events":["batch.completed"],"is_active":true,"last_triggered_at":null,"failure_count":0,"created_at":"2026-02-27T16:14:28.038481+00:00"},{"webhook_id":"a695a3dd-376d-4645-a89b-d458fe7627ab","url":"https://33aa-145-132-101-187.ngrok-free.app","events":["batch.completed"],"is_active":true,"last_triggered_at":"2026-02-26T04:35:00.141471+00:00","failure_count":45,"created_at":"2026-02-26T04:34:59.944836+00:00"}],"count":2}
+[16:14:28 INF] → DELETE https://scriptube.me/api/webhooks/eb1b2890-8279-4607-9ace-ce5ca27ea4a8
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:14:28 INF] ← 200 DELETE https://scriptube.me/api/webhooks/eb1b2890-8279-4607-9ace-ce5ca27ea4a8 (17ms)
+Body: {"status":"deleted","webhook_id":"eb1b2890-8279-4607-9ace-ce5ca27ea4a8","message":null}

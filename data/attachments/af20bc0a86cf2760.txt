@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/c6fdc5cb-ff0a-47ea-b63e-10a685ddf6fd
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (79ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"c6fdc5cb-ff0a-47ea-b63e-10a685ddf6fd","batch_number":326,"status":"processing","created_at":"2026-02-27T16:16:33.747848Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstKOONL001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}

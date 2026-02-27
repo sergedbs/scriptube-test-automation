@@ -1,0 +1,15 @@
+=== REQUEST ===
+POST https://scriptube.me/api/v1/transcripts
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 102
+--- Body ---
+{"urls":["https://www.youtube.com/watch?v=tstINVLD001"],"use_byok":false,"translate_to_english":false}
+
+=== RESPONSE (268ms) ===
+Status: 202
+--- Body ---
+{"batch_id":"254fa5b7-64c1-4d35-a73f-f9e37c87a351","batch_number":329,"status":"pending","url_count":1,"message":"Batch submitted for processing. Poll GET /api/v1/transcripts/{batch_id} for results.","key_source":"system"}

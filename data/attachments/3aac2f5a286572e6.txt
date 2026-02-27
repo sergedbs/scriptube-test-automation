@@ -1,0 +1,37 @@
+[16:16:25 INF] → POST https://scriptube.me/api/webhooks/register
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+  Content-Type: application/json; charset=utf-8
+  Content-Length: 125
+Body: {"url":"https://af69-145-132-101-180.ngrok-free.app","events":["batch.completed"],"secret":"regression-test-secret-key-5678"}
+[16:16:26 INF] ← 201 POST https://scriptube.me/api/webhooks/register (229ms)
+Body: {"status":"active","webhook_id":"435414c4-d6d6-4cec-9eb6-c7fc43e85bbb","message":"Webhook registered successfully"}
+[16:16:26 INF] → POST https://scriptube.me/api/webhooks/435414c4-d6d6-4cec-9eb6-c7fc43e85bbb/test
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:16:26 INF] ← 200 POST https://scriptube.me/api/webhooks/435414c4-d6d6-4cec-9eb6-c7fc43e85bbb/test (287ms)
+Body: {"status":"delivered","delivery_id":"322ebd4f-70db-42fb-b10f-e3b11a2bb7b4","response_code":200,"message":"Test event sent"}
+[16:16:26 INF] → GET https://scriptube.me/api/webhooks/435414c4-d6d6-4cec-9eb6-c7fc43e85bbb/logs?limit=50&offset=0
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:16:26 INF] ← 200 GET https://scriptube.me/api/webhooks/435414c4-d6d6-4cec-9eb6-c7fc43e85bbb/logs?limit=50&offset=0 (86ms)
+Body: {"deliveries":[{"delivery_id":"322ebd4f-70db-42fb-b10f-e3b11a2bb7b4","event":"test","status":"delivered","response_code":200,"attempts":1,"created_at":"2026-02-27T16:16:26.093984+00:00","next_retry_at":null}],"total":1}
+[16:16:26 INF] → POST https://scriptube.me/api/webhooks/435414c4-d6d6-4cec-9eb6-c7fc43e85bbb/retry?delivery_id=322ebd4f-70db-42fb-b10f-e3b11a2bb7b4
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:16:26 INF] ← 404 POST https://scriptube.me/api/webhooks/435414c4-d6d6-4cec-9eb6-c7fc43e85bbb/retry?delivery_id=322ebd4f-70db-42fb-b10f-e3b11a2bb7b4 (84ms)
+Body: {"detail":"Delivery not found, not failed, or webhook inactive"}
+[16:16:26 INF] → DELETE https://scriptube.me/api/webhooks/435414c4-d6d6-4cec-9eb6-c7fc43e85bbb
+Headers:   User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+Body: 
+[16:16:26 INF] ← 200 DELETE https://scriptube.me/api/webhooks/435414c4-d6d6-4cec-9eb6-c7fc43e85bbb (86ms)
+Body: {"status":"deleted","webhook_id":"435414c4-d6d6-4cec-9eb6-c7fc43e85bbb","message":null}

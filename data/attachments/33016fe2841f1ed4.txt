@@ -1,0 +1,13 @@
+=== REQUEST ===
+GET https://scriptube.me/api/v1/transcripts/c82c4426-1d20-4fbc-aa77-ca053810d846
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (109ms) ===
+Status: 200
+--- Body ---
+{"batch_id":"c82c4426-1d20-4fbc-aa77-ca053810d846","batch_number":348,"status":"processing","created_at":"2026-02-27T16:18:35.838373Z","completed_at":null,"items":[{"video_id":"","url":"https://www.youtube.com/watch?v=tstELABS001","title":null,"channel":null,"status":"pending","transcript_text":null,"transcript_language":null,"duration_seconds":null,"error":null}]}

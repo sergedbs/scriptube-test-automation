@@ -1,0 +1,13 @@
+=== REQUEST ===
+DELETE https://scriptube.me/api/v1/transcripts/e3847aaa-5fa6-4498-bc90-31074901a617
+--- Headers ---
+  User-Agent: RestSharp/112.1.0.0
+  X-API-Key: ***MASKED***
+  Accept: application/json
+--- Body ---
+(empty)
+
+=== RESPONSE (71ms) ===
+Status: 405
+--- Body ---
+{"detail":"Method Not Allowed"}
