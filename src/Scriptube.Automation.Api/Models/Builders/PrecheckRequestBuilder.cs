@@ -38,7 +38,7 @@ public sealed class PrecheckRequestBuilder
         if (_urls.Count == 0)
         {
             throw new InvalidOperationException(
-                "At least one URL must be provided before calling Build().");
+                "PrecheckRequestBuilder.Build failed: at least one URL is required.");
         }
 
         return new PrecheckRequest

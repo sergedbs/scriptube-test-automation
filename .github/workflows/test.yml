@@ -151,6 +151,7 @@ jobs:
           name: allure-results-smoke
           path: tests/Scriptube.Automation.Tests/bin/Release/net10.0/allure-results/
           retention-days: 30
+          if-no-files-found: warn
 
       - name: Upload screenshots on failure
         if: failure()
@@ -159,18 +160,21 @@ jobs:
           name: screenshots-smoke
           path: tests/Scriptube.Automation.Tests/bin/Release/net10.0/allure-results/screenshots/
           retention-days: 7
+          if-no-files-found: warn
 
   # ─────────────────────────────────────────────
   # Job 3 — Regression tests
+  #   • push to main          → always
   #   • pull_request to main  → always
   #   • workflow_dispatch     → when suite != 'smoke'
-  #   • push to main          → skipped
   # ─────────────────────────────────────────────
   regression:
     name: Regression Tests
     needs: smoke
     if: |
-      github.event_name == 'workflow_dispatch' && inputs.suite != 'smoke'
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_dispatch' && inputs.suite != 'smoke')
     runs-on: ubuntu-latest
     env:
       SCRIPTUBE_API_KEY: ${{ secrets.SCRIPTUBE_API_KEY }}
@@ -252,6 +256,7 @@ jobs:
           name: allure-results-regression
           path: tests/Scriptube.Automation.Tests/bin/Release/net10.0/allure-results/
           retention-days: 30
+          if-no-files-found: warn
 
       - name: Upload screenshots on failure
         if: failure()
@@ -260,6 +265,7 @@ jobs:
           name: screenshots-regression
           path: tests/Scriptube.Automation.Tests/bin/Release/net10.0/allure-results/screenshots/
           retention-days: 7
+          if-no-files-found: warn
 
   # ─────────────────────────────────────────────
   # Job 4 — Generate + publish Allure report

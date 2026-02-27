@@ -15,6 +15,7 @@ namespace Scriptube.Automation.Tests.Webhooks.Regression;
 /// delivery logs, retry, HMAC signature verification, and batch-completion delivery.
 /// </summary>
 [TestFixture]
+[NonParallelizable] // Shares the static WebhookReceiverManager / ReceivedRequestStore singleton.
 [Category("Regression")]
 [Category("Webhook")]
 [AllureSuite("Regression")]

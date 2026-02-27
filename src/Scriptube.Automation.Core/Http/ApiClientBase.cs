@@ -8,6 +8,7 @@ namespace Scriptube.Automation.Core.Http;
 /// <list type="bullet">
 ///   <item>Injects the <c>X-API-Key</c> header on every request.</item>
 ///   <item>Pipes all traffic through <see cref="LoggingHttpHandler"/>.</item>
+///   <item>Applies transparent HTTP retry/backoff via <see cref="RetryDelegatingHandler"/>.</item>
 ///   <item>Exposes <see cref="OnExchange"/> so Allure loggers can subscribe.</item>
 /// </list>
 /// </summary>
@@ -26,13 +27,29 @@ public class ApiClientBase : IDisposable
 
     public ApiClientBase(TestSettings settings, bool requiresAuth = true)
     {
+        var retryPolicy = HttpPolicyFactory.BuildPolicy(
+            retrySettings: settings.Retry,
+            requestTimeoutSeconds: settings.Timeouts.RequestSeconds);
+
+        // Handler chain (outer → inner):
+        //   LoggingHttpHandler  — logs the logical request/final response once, fires OnExchange
+        //   RetryDelegatingHandler — transparent retry/backoff via Polly
+        //   HttpClientHandler  — actual TCP/TLS socket
         _loggingHandler = new LoggingHttpHandler
         {
-            InnerHandler = new HttpClientHandler()
+            InnerHandler = new RetryDelegatingHandler(retryPolicy)
+            {
+                InnerHandler = new HttpClientHandler()
+            }
         };
 
+        // HttpClient.Timeout is set to InfiniteTimeSpan so it does not cancel the combined
+        // CancellationToken before Polly has a chance to perform its retry attempts.
+        // Per-attempt network timeouts are governed by the OS/socket layer; overall test
+        // timeouts are enforced by NUnit's [Timeout] attribute or the Polly timeout strategy.
         var httpClient = new HttpClient(_loggingHandler)
         {
+            // Enforce a hard per-request timeout to prevent hung sockets from stalling the run.
             Timeout = TimeSpan.FromSeconds(settings.Timeouts.RequestSeconds)
         };
 
